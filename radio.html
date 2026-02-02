@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <title>VIBE RADIO /// HUB</title>
+    <style>
+        :root {
+            --bg: #050505;
+            --card-bg: #111;
+            --text: #888;
+            --text-high: #fff;
+            --accent-vc: #ff6b35;
+            /* Orange */
+            --accent-gb: #00ff88;
+            /* Green */
+            --accent-c4: #a37df5;
+            /* Purple */
+            --accent-red: #ff3333;
+            /* Red */
+            --accent-ab: #00ccff;
+            /* Blue */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Mono', 'Monaco', monospace;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .hub-container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 16px;
+        }
+
+        .brand {
+            font-size: 14px;
+            letter-spacing: 4px;
+            color: var(--text-high);
+            font-weight: bold;
+        }
+
+        .sub {
+            font-size: 9px;
+            color: #444;
+            margin-top: 4px;
+        }
+
+        .crate-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            padding: 16px;
+            text-decoration: none;
+            border: 1px solid #222;
+            transition: transform 0.2s, border-color 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .crate-link:active {
+            transform: scale(0.98);
+        }
+
+        .crate-link:hover {
+            border-color: #444;
+        }
+
+        .crate-info {
+            z-index: 2;
+        }
+
+        .crate-name {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-high);
+            margin-bottom: 4px;
+        }
+
+        .crate-desc {
+            display: block;
+            font-size: 10px;
+            color: var(--text);
+        }
+
+        .crate-filesize {
+            font-size: 9px;
+            color: #333;
+            margin-top: 4px;
+        }
+
+        /* Accents */
+        .vc {
+            border-left: 4px solid var(--accent-vc);
+        }
+
+        .vc:hover {
+            border-color: var(--accent-vc);
+        }
+
+        .gb {
+            border-left: 4px solid var(--accent-gb);
+        }
+
+        .gb:hover {
+            border-color: var(--accent-gb);
+        }
+
+        .c4 {
+            border-left: 4px solid var(--accent-c4);
+        }
+
+        .c4:hover {
+            border-color: var(--accent-c4);
+        }
+
+        .red {
+            border-left: 4px solid var(--accent-red);
+        }
+
+        .red:hover {
+            border-color: var(--accent-red);
+        }
+
+        .ab {
+            border-left: 4px solid var(--accent-ab);
+        }
+
+        .ab:hover {
+            border-color: var(--accent-ab);
+        }
+
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 50%, rgba(0, 0, 0, 0.02) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .footer {
+            margin-top: 32px;
+            font-size: 9px;
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="scanline"></div>
+
+    <div class="hub-container">
+        <div class="header">
+            <div class="brand">RADIO HUB</div>
+            <div class="sub">SELECT FREQUENCY</div>
+        </div>
+
+        <a href="vc.html" class="crate-link vc">
+            <div class="crate-info">
+                <span class="crate-name">THE SOURCE</span>
+                <span class="crate-desc">Library / Funk / Samples</span>
+                <div class="crate-filesize">vc.html acts as main</div>
+            </div>
+            <div style="font-size: 20px;">🍊</div>
+        </a>
+
+        <a href="gb.html" class="crate-link gb">
+            <div class="crate-info">
+                <span class="crate-name">VIBE SHIFT</span>
+                <span class="crate-desc">Modern / Electronic / Jazz</span>
+                <div class="crate-filesize">gb.html + new extensions</div>
+            </div>
+            <div style="font-size: 20px;">🔋</div>
+        </a>
+
+        <a href="c4.html" class="crate-link c4">
+            <div class="crate-info">
+                <span class="crate-name">EXPERIMENTAL</span>
+                <span class="crate-desc">Ambient / Concrete / Texture</span>
+                <div class="crate-filesize">c4.html</div>
+            </div>
+            <div style="font-size: 20px;">⚛️</div>
+        </a>
+
+        <a href="red-crate.html" class="crate-link red">
+            <div class="crate-info">
+                <span class="crate-name">FOUNDATION</span>
+                <span class="crate-desc">Classic Soul / R&B Breaks</span>
+                <div class="crate-filesize">red-crate.html</div>
+            </div>
+            <div style="font-size: 20px;">🧱</div>
+        </a>
+
+        <a href="ab.html" class="crate-link ab">
+            <div class="crate-info">
+                <span class="crate-name">CRATE 120</span>
+                <span class="crate-desc">Expanded Library</span>
+                <div class="crate-filesize">ab.html</div>
+            </div>
+            <div style="font-size: 20px;">📼</div>
+        </a>
+
+        <div class="footer">
+            SYSTEM READY<br>
+            v2.0.4
+        </div>
+    </div>
+
+</body>
+
+</html>

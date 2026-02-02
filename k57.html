@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>LEFTFIELD CRATE 71</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --panel: #111;
+            --border: #222;
+            --accent: #ff6b35;
+            --accent2: #00ff88;
+            --text: #e8e8e8;
+            --dim: #666;
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'SF Mono', 'Monaco', monospace;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .app {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding-top: var(--safe-top);
+            padding-bottom: var(--safe-bottom);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+            background: #080808;
+        }
+
+        .brand {
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--accent);
+            letter-spacing: 2px;
+        }
+
+        .mode-pills {
+            display: flex;
+            gap: 4px;
+        }
+
+        .pill {
+            padding: 4px 8px;
+            font-size: 8px;
+            border-radius: 10px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            color: var(--dim);
+            cursor: pointer;
+        }
+
+        .pill.on {
+            background: var(--accent2);
+            color: #000;
+            border-color: var(--accent2);
+        }
+
+        .video-section {
+            flex-shrink: 0;
+            background: #000;
+        }
+
+        .video-wrap {
+            position: relative;
+            width: 100%;
+            padding-bottom: 40%;
+        }
+
+        .video-wrap iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .now-playing {
+            padding: 10px 12px;
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .np-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .np-main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .np-artist {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--accent);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .np-track {
+            font-size: 10px;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .np-tags {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 8px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            text-transform: uppercase;
+        }
+
+        .tag.cat {
+            background: rgba(255, 107, 53, 0.2);
+            color: var(--accent);
+        }
+
+        .tag.sonic {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent2);
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tag.year {
+            color: var(--dim);
+            border: 1px solid var(--border);
+        }
+
+        .controls {
+            display: flex;
+            gap: 6px;
+            padding: 10px 12px;
+            background: #080808;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ctrl {
+            flex: 1;
+            padding: 12px 8px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .ctrl:active {
+            transform: scale(0.95);
+        }
+
+        .ctrl.primary {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        .ctrl.on {
+            background: var(--accent2);
+            color: #000;
+            border-color: var(--accent2);
+        }
+
+        .cat-bar {
+            display: flex;
+            gap: 4px;
+            padding: 8px 12px;
+            overflow-x: auto;
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .cat-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cat-chip {
+            flex-shrink: 0;
+            padding: 5px 10px;
+            font-size: 9px;
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--dim);
+            cursor: pointer;
+            letter-spacing: 1px;
+        }
+
+        .cat-chip.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        .cat-chip span {
+            opacity: 0.6;
+            margin-left: 2px;
+        }
+
+        .track-list {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .track {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .track:active {
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .track.playing {
+            background: rgba(0, 255, 136, 0.08);
+            border-left: 2px solid var(--accent2);
+        }
+
+        .track.search-needed {
+            opacity: 0.5;
+        }
+
+        .track.search-needed .t-title::after {
+            content: " 🔍";
+            opacity: 0.6;
+        }
+
+        .t-num {
+            width: 20px;
+            font-size: 9px;
+            color: var(--dim);
+            text-align: center;
+        }
+
+        .t-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .t-artist {
+            font-size: 10px;
+            color: var(--accent);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .t-title {
+            font-size: 9px;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .t-meta {
+            font-size: 8px;
+            color: var(--dim);
+            text-align: right;
+        }
+
+        .t-cat {
+            display: block;
+            text-transform: uppercase;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 12px;
+            background: #080808;
+            border-top: 1px solid var(--border);
+            font-size: 9px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-val {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .stat-lbl {
+            color: var(--dim);
+            font-size: 7px;
+            letter-spacing: 1px;
+        }
+    </style>
+    <base target="_blank">
+</head>
+
+<body>
+    <div class="app">
+        <div class="header">
+            <span class="brand">LEFTFIELD CRATE 71</span>
+            <div class="mode-pills">
+                <div class="pill on" id="p-auto">AUTO</div>
+                <div class="pill" id="p-shuf">SHUF</div>
+                <div class="pill" id="p-loop">LOOP</div>
+            </div>
+        </div>
+        <div class="video-section">
+            <div class="video-wrap">
+                <div id="player"></div>
+            </div>
+        </div>
+        <div class="now-playing">
+            <div class="np-row">
+                <div class="np-main">
+                    <div class="np-artist" id="np-artist">Select a track</div>
+                    <div class="np-track" id="np-track">--</div>
+                </div>
+            </div>
+            <div class="np-tags">
+                <span class="tag cat" id="np-cat">--</span>
+                <span class="tag year" id="np-year">--</span>
+                <span class="tag sonic" id="np-sonic">--</span>
+            </div>
+        </div>
+        <div class="controls">
+            <button class="ctrl" id="btn-prev">PREV</button>
+            <button class="ctrl primary" id="btn-next">NEXT</button>
+            <button class="ctrl" id="btn-rand">RND</button>
+        </div>
+        <div class="cat-bar" id="cats"></div>
+        <div class="track-list" id="list"></div>
+        <div class="footer">
+            <div class="stat"><span class="stat-val" id="s-total">0</span><br><span class="stat-lbl">TOTAL</span></div>
+            <div class="stat"><span class="stat-val" id="s-show">0</span><br><span class="stat-lbl">SHOWING</span></div>
+            <div class="stat"><span class="stat-val" id="s-played">0</span><br><span class="stat-lbl">PLAYED</span>
+            </div>
+            <div class="stat"><span class="stat-val" id="s-idx">0</span><br><span class="stat-lbl">INDEX</span></div>
+        </div>
+    </div>
+    <script>
+        const A = [
+            // =========================
+            // TEST TRACK (VERIFIED WORKING)
+            // =========================
+            { a: "TEST: James Brown", t: "Funky Drummer (Red Crate)", c: "test", y: 1970, u: "https://www.youtube.com/watch?v=AoQ4AtsFWVM", s: "[TEST] — If this works, player is fine." },
+
+            // =========================
+            // POST-CLUB / UK LEFTFIELD
+            // =========================
+            { a: "Four Tet", t: "Baby", c: "post_club", y: 2020, u: "https://www.youtube.com/watch?v=i1gVxKhdGPs", s: "[CLUB][BRK] — ecstatic house arpeggios" },
+            { a: "Floating Points", t: "Bias", c: "post_club", y: 2019, u: "https://www.youtube.com/watch?v=Au1GJmBxrk4", s: "[CLUB][ODD] — precision pulse, deep focus" },
+            { a: "Overmono", t: "So U Kno", c: "post_club", y: 2021, u: "https://www.youtube.com/watch?v=SRVxRUJxITY", s: "[CLUB][BRK] — warehouse bounce, big forward motion" },
+            { a: "Joy Orbison", t: "Hyph Mngo", c: "post_club", y: 2009, u: "https://www.youtube.com/watch?v=A57xDblpuak", s: "[CLUB][BASS] — classic UK throb, clean hook" },
+            { a: "Burial", t: "Archangel", c: "post_club", y: 2007, u: "https://www.youtube.com/watch?v=8k_f2QK77ew", s: "[ODD][VOX] — ghost vocal shards, night-rain glow" },
+            { a: "SBTRKT", t: "Wildfire", c: "post_club", y: 2011, u: "https://www.youtube.com/watch?v=A-LEiOzXHWM", s: "[BRK][VOX] — clipped drums + neon vocal top" },
+            { a: "Mount Kimbie", t: "Made to Stray", c: "post_club", y: 2013, u: "https://www.youtube.com/watch?v=0XG9WwFrMWA", s: "[BRK][ODD] — broken-house chassis, sly guitar energy" },
+            { a: "DJ Koze", t: "Pick Up", c: "post_club", y: 2018, u: "https://www.youtube.com/watch?v=JE63vMzb3UE", s: "[CLUB][LIFT] — timeless disco-loop sorcery" },
+            { a: "Caribou", t: "Can't Do Without You", c: "post_club", y: 2014, u: "https://www.youtube.com/watch?v=BI2Et19vDCM", s: "[CLUB][LIFT] — chant lift, festival-ready but classy" },
+            { a: "Against All Logic", t: "Such a Bad Way", c: "post_club", y: 2020, u: "https://www.youtube.com/watch?v=_lIVfQY-xsA", s: "[BRK][BASS] — dusty loop pressure, tough groove" },
+            { a: "Bicep", t: "Glue", c: "post_club", y: 2017, u: "https://www.youtube.com/watch?v=A7ZxRs45tTg", s: "[CLUB][LIFT] — emotional rave architecture" },
+            { a: "Ross From Friends", t: "Talk to Me You'll Understand", c: "post_club", y: 2021, u: "https://www.youtube.com/watch?v=IUhjfmV1Pvc", s: "[CLUB][ODD] — off-kilter house with heart" },
+            { a: "Avalon Emerson", t: "The Frontier", c: "post_club", y: 2016, u: "https://www.youtube.com/watch?v=m1DUG29Hcao", s: "[CLUB][DRIVE] — sleek engine, late-night clarity" },
+            { a: "Ben UFO", t: "Hessle Audio Mix", c: "post_club", y: 2019, u: "https://www.youtube.com/watch?v=phClx3879HM", s: "[CLUB][MIX] — bridge-builder energy, percussive logic" },
+            { a: "Tirzah", t: "Make It Up", c: "post_club", y: 2018, u: "https://www.youtube.com/watch?v=iuOvcb2A-ck", s: "[ODD][VOX] — intimate minimal pop over bent beats" },
+            { a: "Nicolas Jaar", t: "Mi Mujer", c: "post_club", y: 2010, u: "https://www.youtube.com/watch?v=1RieXq8zGIc", s: "[ODD][BASS] — slow-burn tension, noir swing" },
+
+            // =========================
+            // COSMIC JAZZ / ELECTRO-SAX
+            // =========================
+            { a: "Sons of Kemet", t: "My Queen Is Harriet Tubman", c: "cosmic_jazz", y: 2018, u: "https://www.youtube.com/watch?v=twjaSC5Ym9s", s: "[DRIVE][ODD] — marching drums + riot horns" },
+            { a: "Shabaka and the Ancestors", t: "The Observer", c: "cosmic_jazz", y: 2020, u: "https://www.youtube.com/watch?v=Lkq_CZhLrII", s: "[ODD][ARC] — ritual horn lines, wide horizon" },
+            { a: "Nubya Garcia", t: "Pace", c: "cosmic_jazz", y: 2020, u: "https://www.youtube.com/watch?v=ubxP9vNVDAQ", s: "[ODD][GROOVE] — sax glide over heavy pocket" },
+            { a: "Makaya McCraven", t: "This Place That Place", c: "cosmic_jazz", y: 2018, u: "https://www.youtube.com/watch?v=w3giWDYxPTI", s: "[BRK][ODD] — chopped-jazz drums, head-nod science" },
+            { a: "Alfa Mist", t: "Keep On", c: "cosmic_jazz", y: 2017, u: "https://www.youtube.com/watch?v=XrY2m5rdlQQ", s: "[STR][BRK] — Rhodes warmth + crisp drum pocket" },
+            { a: "GoGo Penguin", t: "Hopopono", c: "cosmic_jazz", y: 2016, u: "https://www.youtube.com/watch?v=OgGYjHEGx2k", s: "[DRIVE][ODD] — cinematic trio propulsion" },
+            { a: "Mammal Hands", t: "Shadow Work", c: "cosmic_jazz", y: 2017, u: "https://www.youtube.com/watch?v=3UIXNX96TOQ", s: "[ODD][TRN] — hypnotic cycles, desert-night mood" },
+            { a: "Portico Quartet", t: "Prickly Pear", c: "cosmic_jazz", y: 2019, u: "https://www.youtube.com/watch?v=iZb5t78FsJs", s: "[ODD][STR] — hang-drum shimmer + dusk bass" },
+            { a: "Yazz Ahmed", t: "She Stands on the Shore", c: "cosmic_jazz", y: 2017, u: "https://www.youtube.com/watch?v=UYfcmUfXqZs", s: "[ODD][LIFT] — trumpet glow, slow-build power" },
+            { a: "Theon Cross", t: "Activate", c: "cosmic_jazz", y: 2019, u: "https://www.youtube.com/watch?v=RpXEgKh8jWU", s: "[BASS][DRIVE] — tuba as sub-bass engine" },
+            { a: "Melt Yourself Down", t: "We Are Not the Same", c: "cosmic_jazz", y: 2013, u: "https://www.youtube.com/watch?v=wt0Br89hb0I", s: "[BRK][ODD] — punk-jazz sprint, sax stabs" },
+            { a: "BADBADNOTGOOD", t: "Confessions", c: "cosmic_jazz", y: 2014, u: "https://www.youtube.com/watch?v=237Nq3O4XXE", s: "[BRK][MOOD] — modern noir groove, head-nod tempo" },
+            { a: "Christian Scott aTunde Adjuah", t: "The Eraser", c: "cosmic_jazz", y: 2010, u: "https://www.youtube.com/watch?v=pF2s2Rh_lnE", s: "[ODD][ARC] — future-jazz pressure waves" },
+            { a: "Sungazer", t: "Drunk", c: "cosmic_jazz", y: 2014, u: "https://www.youtube.com/watch?v=1FGPw-pkXyE", s: "[ODD][BRK] — prog-funk math with sparkle" },
+
+            // =========================
+            // VOCAL ALCHEMY / EXPERIMENTAL POP
+            // =========================
+            { a: "Arca", t: "Desafío", c: "vocal_alchemy", y: 2017, u: "https://www.youtube.com/watch?v=PwXOgzmTbVU", s: "[ODD][VOX] — volcanic emotion, elastic rhythm" },
+            { a: "SOPHIE", t: "Is It Cold in the Water?", c: "vocal_alchemy", y: 2018, u: "https://www.youtube.com/watch?v=PdkALGv3HTY", s: "[ODD][LIFT] — crystalline futurism, big feeling" },
+            { a: "Lyra Pramuk", t: "Tendrils", c: "vocal_alchemy", y: 2020, u: "https://www.youtube.com/watch?v=b9Pj4FmlXCI", s: "[VOX][ODD] — voice-only cathedral turns digital" },
+            { a: "Laurel Halo", t: "Jelly", c: "vocal_alchemy", y: 2012, u: "https://www.youtube.com/watch?v=IrjeMN_U1hw", s: "[ODD][BRK] — soft-focus club mutations" },
+            { a: "Loraine James", t: "Running Like That", c: "vocal_alchemy", y: 2019, u: "https://www.youtube.com/watch?v=HgZj-LyAlFs", s: "[BRK][ODD] — jagged drums, tender core" },
+            { a: "Aïsha Devi", t: "Dislocation of the Alpha", c: "vocal_alchemy", y: 2015, u: "https://www.youtube.com/watch?v=fvWrNBx8JTY", s: "[VOX][ODD] — mantra-tech, ritual pressure" },
+            { a: "FKA twigs", t: "Two Weeks", c: "vocal_alchemy", y: 2014, u: "https://www.youtube.com/watch?v=3yDP9MKVhZc", s: "[VOX][LIFT] — sensual precision, clean future R&B" },
+            { a: "Oklou", t: "god's chariot", c: "vocal_alchemy", y: 2020, u: "https://www.youtube.com/watch?v=BvlJ3keIJdw", s: "[VOX][ODD] — airy digital pop, soft club halo" },
+            { a: "Amnesia Scanner", t: "AS Too Wrong", c: "vocal_alchemy", y: 2019, u: "https://www.youtube.com/watch?v=U8Kk3nD2Bh8", s: "[ODD][BRK] — deconstructed club bite, weird joy" },
+            { a: "Oneohtrix Point Never", t: "Chrome Country", c: "vocal_alchemy", y: 2013, u: "https://www.youtube.com/watch?v=c5u7IYJBdc0", s: "[ODD][STR] — synthetic nostalgia, uncanny shine" },
+            { a: "Jlin", t: "Kyanite", c: "vocal_alchemy", y: 2015, u: "https://www.youtube.com/watch?v=9E0qBhpz4cQ", s: "[BRK][ODD] — footwork-adjacent percussion hypnosis" },
+            { a: "Rian Treanor", t: "Ataxia", c: "vocal_alchemy", y: 2020, u: "https://www.youtube.com/watch?v=Omka_4uJPtY", s: "[BRK][ODD] — hyper-percussion, controlled chaos" },
+            { a: "Kaitlyn Aurelia Smith", t: "An Intention", c: "vocal_alchemy", y: 2016, u: "https://www.youtube.com/watch?v=uiRXSO_K7gQ", s: "[ODD] — modular-synth sunlight, gentle drift" },
+            { a: "Caterina Barbieri", t: "Fantas", c: "vocal_alchemy", y: 2019, u: "https://www.youtube.com/watch?v=QCSUJylApgk", s: "[ODD][TRN] — arpeggio trance, sacred machine" },
+            { a: "Jenny Hval", t: "That Battle Is Over", c: "vocal_alchemy", y: 2016, u: "https://www.youtube.com/watch?v=oGksHxwnap0", s: "[VOX][ODD] — art-pop intimacy, strange clarity" },
+
+            // =========================
+            // ART-SPEECH / WEIRD POP THEATER
+            // =========================
+            { a: "Anne Clark", t: "Our Darkness", c: "art_speech", y: 1983, u: "https://www.youtube.com/watch?v=yVAePFKJXk0", s: "[VOX][BRK] — spoken post-punk over cold pulse" },
+            { a: "Moor Mother", t: "After Images", c: "art_speech", y: 2016, u: "https://www.youtube.com/watch?v=9rURsTkKLiY", s: "[VOX][ODD] — poetry as pressure, future-noir" },
+            { a: "Kae Tempest", t: "People's Faces", c: "art_speech", y: 2019, u: "https://www.youtube.com/watch?v=gYBaNahELn8", s: "[VOX][MOOD] — spoken intimacy, city-night realism" },
+            { a: "The Residents", t: "Constantinople", c: "art_speech", y: 1978, u: "https://www.youtube.com/watch?v=WsEz1OAUBBM", s: "[ODD][STAB] — surreal theater-pop, hooky weirdness" },
+            { a: "The Normal", t: "Warm Leatherette", c: "art_speech", y: 1978, u: "https://www.youtube.com/watch?v=1lC5xIaoClU", s: "[ODD] — minimal machine-pop, stark cool" },
+            { a: "Fever Ray", t: "If I Had a Heart", c: "art_speech", y: 2009, u: "https://www.youtube.com/watch?v=EBAzlNJonO8", s: "[ODD][BASS] — ritual thump, haunted hook" },
+            { a: "Björk", t: "Hunter", c: "art_speech", y: 1997, u: "https://www.youtube.com/watch?v=WxL1rw6cw-E", s: "[ODD][VOX] — primal vocal + tectonic beat design" },
+            { a: "Diamanda Galás", t: "The Litanies of Satan", c: "art_speech", y: 1982, u: "https://www.youtube.com/watch?v=0-XHFOkh-ac", s: "[ODD][VOX] — extreme theater-voice, pure menace" },
+            { a: "Arthur Russell", t: "This Is How We Walk on the Moon", c: "art_speech", y: 1994, u: "https://www.youtube.com/watch?v=N-JkFfNgiYA", s: "[ODD][STR] — fragile minimal groove, mythic calm" },
+            { a: "Scott Walker", t: "The Old Man's Back Again", c: "art_speech", y: 1969, u: "https://www.youtube.com/watch?v=skh2fuwrmqU", s: "[STR][ODD] — baroque noir, uncanny croon" },
+
+            // =========================
+            // INDIE-ELECTRONIC / PARTY GLUE
+            // =========================
+            { a: "Little Dragon", t: "Ritual Union", c: "indie_hybrid", y: 2011, u: "https://www.youtube.com/watch?v=0Yeb3q5nqWA", s: "[VOX][BRK] — sharp hook, minimal funk chassis" },
+            { a: "Khruangbin", t: "Evan Finds the Third Room", c: "indie_hybrid", y: 2018, u: "https://www.youtube.com/watch?v=QcD_YXCxxZM", s: "[BASS][GROOVE] — effortless pocket, endless loop" },
+            { a: "Stereolab", t: "French Disko", c: "indie_hybrid", y: 1993, u: "https://www.youtube.com/watch?v=cdhVfr53Y2s", s: "[BRK][STAB] — motorik-pop snap, crowd mover" },
+            { a: "Hot Chip", t: "Flutes", c: "indie_hybrid", y: 2006, u: "https://www.youtube.com/watch?v=99z1_IMJNl8", s: "[CLUB][LIFT] — sleek synth-pop for the floor" },
+            { a: "Jungle", t: "Busy Earnin'", c: "indie_hybrid", y: 2014, u: "https://www.youtube.com/watch?v=BcsfftwLUf0", s: "[BRK][VOX] — modern funk-pop engine, bright" },
+            { a: "L'Impératrice", t: "Vanille Fraise", c: "indie_hybrid", y: 2018, u: "https://www.youtube.com/watch?v=Tkur0Q2PHEU", s: "[DISCO][LIFT] — French groove gloss, easy win" },
+            { a: "Tycho", t: "Awake", c: "indie_hybrid", y: 2014, u: "https://www.youtube.com/watch?v=VZBrZV3nHAA", s: "[STR][MOOD] — clean uplift instrumental, sunset fuel" },
+            { a: "Washed Out", t: "Feel It All Around", c: "indie_hybrid", y: 2009, u: "https://www.youtube.com/watch?v=3Pt0V6K7WpM", s: "[MOOD] — hazy loop charm, warm drift" },
+            { a: "The Avalanches", t: "Since I Left You", c: "indie_hybrid", y: 2000, u: "https://www.youtube.com/watch?v=cd8xMSWRe7w", s: "[BRK][LIFT] — sample-collage joy, party oxygen" },
+            { a: "Lorn", t: "Acid Rain", c: "indie_hybrid", y: 2012, u: "https://www.youtube.com/watch?v=nxg4C365LbQ", s: "[BASS][ODD] — brutalist synth mood, slow stomp" },
+
+            // =========================
+            // TRANSITION TOOLS / MOOD SWITCHES
+            // =========================
+            { a: "Rival Consoles", t: "Persona", c: "transitions", y: 2018, u: "https://www.youtube.com/watch?v=niiUkcLpwXY", s: "[ODD][DRIVE] — arpeggio tension, perfect bridge" },
+            { a: "Nils Frahm", t: "Says", c: "transitions", y: 2013, u: "https://www.youtube.com/watch?v=dIwwjy4slI8", s: "[STR][LIFT] — slow-build catharsis, huge payoff" },
+            { a: "Max Cooper", t: "Order From Chaos", c: "transitions", y: 2016, u: "https://www.youtube.com/watch?v=_7wKjTf_RlI", s: "[ODD][CLUB] — cerebral pulse, cinematic rise" },
+            { a: "Boards of Canada", t: "Roygbiv", c: "transitions", y: 1998, u: "https://www.youtube.com/watch?v=SM4tQcUt_mQ", s: "[ODD][MOOD] — nostalgic synth bounce, soft focus" },
+            { a: "Aphex Twin", t: "Xtal", c: "transitions", y: 1992, u: "https://www.youtube.com/watch?v=sWcLccMuCA8", s: "[ODD][BRK] — dream breakbeats, pure atmosphere" },
+            { a: "Jon Hopkins", t: "Open Eye Signal", c: "transitions", y: 2013, u: "https://www.youtube.com/watch?v=Q04ILDXe3QE", s: "[CLUB][DRIVE] — pristine techno lift, laser-clean" }
+        ];
+
+        let Q = [...A], idx = -1, played = 0, cat = 'all', auto = true, shuf = false, loop = false, P = null;
+
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+
+        function onYouTubeIframeAPIReady() { }
+
+        function vid(u) {
+            if (!u || u === "SEARCH") return null;
+            const m = u.match(/(?:v=|\/shorts\/|youtu\.be\/)([^&?\/]+)/);
+            return m ? m[1] : null;
+        }
+
+        function load(i) {
+            if (i < 0 || i >= Q.length) return;
+            const x = Q[i], id = vid(x.u);
+
+
+            if (P) {
+                P.loadVideoById(id);
+            } else {
+                P = new YT.Player('player', {
+                    videoId: id,
+                    playerVars: { autoplay: 1, controls: 1, modestbranding: 1, rel: 0 },
+                    events: { onStateChange: onEnd }
+                });
+            }
+            idx = i;
+            document.getElementById('np-artist').textContent = x.a;
+            document.getElementById('np-track').textContent = x.t;
+            document.getElementById('np-cat').textContent = x.c;
+            document.getElementById('np-year').textContent = x.y;
+            document.getElementById('np-sonic').textContent = x.s;
+            document.getElementById('s-idx').textContent = i + 1;
+            render();
+        }
+
+        function onEnd(e) {
+            if (e.data === 0) {
+                played++;
+                document.getElementById('s-played').textContent = played;
+                if (loop) { P.seekTo(0); P.playVideo(); }
+                else if (auto) next();
+            }
+        }
+
+        function next() {
+            if (shuf) {
+                let ni;
+                do { ni = Math.floor(Math.random() * Q.length); } while (ni === idx && Q.length > 1);
+                idx = ni;
+            } else {
+                idx = (idx + 1) % Q.length;
+            }
+            load(idx);
+        }
+
+        function prev() {
+            idx = idx <= 0 ? Q.length - 1 : idx - 1;
+            load(idx);
+        }
+
+        function rand() {
+            idx = Math.floor(Math.random() * Q.length);
+            load(idx);
+        }
+
+        function filter(c) {
+            cat = c;
+            Q = c === 'all' ? [...A] : A.filter(x => x.c === c);
+            idx = -1;
+            document.querySelectorAll('.cat-chip').forEach(e => e.classList.toggle('active', e.dataset.c === c));
+            stats(); render();
+        }
+
+        function render() {
+            document.getElementById('list').innerHTML = Q.map((x, i) => {
+                const needsSearch = !x.u || x.u === "SEARCH";
+                return `
+                <div class="track ${i === idx ? 'playing' : ''} ${needsSearch ? 'search-needed' : ''}" onclick="load(${i})">
+                    <div class="t-num">${i + 1}</div>
+                    <div class="t-info">
+                        <div class="t-artist">${x.a}</div>
+                        <div class="t-title">${x.t}${needsSearch ? ' (search)' : ''}</div>
+                    </div>
+                    <div class="t-meta">
+                        <span class="t-cat">${x.c}</span>
+                        ${x.y}
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function cats() {
+            const c = {}; A.forEach(x => c[x.c] = (c[x.c] || 0) + 1);
+            document.getElementById('cats').innerHTML =
+                `<div class="cat-chip active" data-c="all" onclick="filter('all')">ALL<span>${A.length}</span></div>` +
+                Object.keys(c).map(k =>
+                    `<div class="cat-chip" data-c="${k}" onclick="filter('${k}')">${k.replace(/_/g, ' ').toUpperCase()}<span>${c[k]}</span></div>`
+                ).join('');
+        }
+
+        function stats() {
+            document.getElementById('s-total').textContent = A.length;
+            document.getElementById('s-show').textContent = Q.length;
+        }
+
+        document.getElementById('btn-next').onclick = next;
+        document.getElementById('btn-prev').onclick = prev;
+        document.getElementById('btn-rand').onclick = rand;
+        document.getElementById('p-auto').onclick = function () { auto = !auto; this.classList.toggle('on', auto); };
+        document.getElementById('p-shuf').onclick = function () { shuf = !shuf; this.classList.toggle('on', shuf); };
+        document.getElementById('p-loop').onclick = function () { loop = !loop; this.classList.toggle('on', loop); };
+
+        cats(); render(); stats();
+    </script>
+</body>
+
+</html>

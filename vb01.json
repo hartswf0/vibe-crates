@@ -1,0 +1,137 @@
+// Vibe Extension Pack — crate: VIBE_EXT_01 (drop-in playlist array)
+// Schema: { a, t, c, y, u, s, q }
+
+const VIBE_EXT_01 = [
+    // --- BRIDGE / UK SHAPE-ROTATION ---
+    { a: "Crooked Colours", t: "Hold On", c: "vibe_bridge_uk", y: "[BRK][SYNTH]", u: "", s: "Sunlit tension: bright chords over a steady, patient pulse.", q: "https://www.youtube.com/results?search_query=Crooked+Colours+Hold+On"
+    },
+    { a: "Jamie xx", t: "Gosh", c: "vibe_bridge_uk", y: "[BRK][RAVE]", u: "", s: "Slow-bloom rave cathedral; builds like weather.", q: "https://www.youtube.com/results?search_query=Jamie+xx+Gosh"
+    },
+    { a: "Jamie xx", t: "Sleep Sound", c: "vibe_bridge_uk", y: "[BRK][UK]", u: "", s: "Head-nod propulsion with clipped vocal shards.", q: "https://www.youtube.com/results?search_query=Jamie+xx+Sleep+Sound"
+    },
+    { a: "Jamie xx", t: "SeeSaw", c: "vibe_bridge_uk", y: "[BASS][DRIFT]", u: "", s: "Elastic bounce—minimal, warm, and off-center.", q: "https://www.youtube.com/results?search_query=Jamie+xx+SeeSaw"
+    },
+    { a: "Jamie xx", t: "Obvs", c: "vibe_bridge_uk", y: "[MIN][PULSE]", u: "", s: "Two-note insistence; clean pressure.", q: "https://www.youtube.com/results?search_query=Jamie+xx+Obvs"
+    },
+    { a: "Jamie xx", t: "Loud Places", c: "vibe_bridge_uk", y: "[VOICE][GLOW]", u: "", s: "Melancholy euphoria with a soft human core.", q: "https://www.youtube.com/results?search_query=Jamie+xx+Loud+Places"
+    },
+    { a: "Jamie xx", t: "Girl", c: "vibe_bridge_uk", y: "[CLUB][SHEEN]", u: "", s: "A glossy loop that keeps widening its grin.", q: "https://www.youtube.com/results?search_query=Jamie+xx+Girl"
+    },
+    { a: "Jamie xx", t: "I Know There's Gonna Be (Good Times)", c: "vibe_bridge_uk", y: "[AFRO][JOY]", u: "", s: "Celebratory swing with crisp modern edges.", q: "https://www.youtube.com/results?search_query=Jamie+xx+I+Know+There%27s+Gonna+Be+%28Good+Times%29"
+    },
+    { a: "Jamie xx", t: "Stranger in a Room", c: "vibe_bridge_uk", y: "[VOICE][MIST]", u: "", s: "Room-tone intimacy; drifting, private, electric.", q: "https://www.youtube.com/results?search_query=Jamie+xx+Stranger+in+a+Room"
+    },
+    { a: "Jamie xx", t: "The Rest Is Noise", c: "vibe_bridge_uk", y: "[BRK][SHIMMER]", u: "", s: "Glassy afterhours—motion without urgency.", q: "https://www.youtube.com/results?search_query=Jamie+xx+The+Rest+Is+Noise"
+    },
+    { a: "Jamie xx", t: "Far Nearer", c: "vibe_bridge_uk", y: "[UKG][GHOST]", u: "", s: "Garage DNA, emotionally remote and precise.", q: "https://www.youtube.com/results?search_query=Jamie+xx+Far+Nearer"
+    },
+    { a: "Jamie xx", t: "All Under One Roof Raving", c: "vibe_bridge_uk", y: "[RAVE][HARD]", u: "", s: "Warehouse memory rendered as minimal code.", q: "https://www.youtube.com/results?search_query=Jamie+xx+All+Under+One+Roof+Raving"
+    },
+    { a: "Jamie xx", t: "idontknow", c: "vibe_bridge_uk", y: "[RAVE][STROBE]", u: "", s: "Big-room voltage with a weird little grin.", q: "https://www.youtube.com/results?search_query=Jamie+xx+idontknow"
+    },
+    { a: "Jamie xx", t: "KILL DEM", c: "vibe_bridge_uk", y: "[BASS][DRUM]", u: "", s: "Percussive stomp—fierce, bright, skeletal.", q: "https://www.youtube.com/results?search_query=Jamie+xx+KILL+DEM"
+    },
+    { a: "Gil Scott-Heron & Jamie xx", t: "NY Is Killing Me", c: "vibe_bridge_uk", y: "[REMIX][NOIR]", u: "", s: "Spoken gravity over a clean, modern pulse.", q: "https://www.youtube.com/results?search_query=Gil+Scott-Heron+Jamie+xx+NY+Is+Killing+Me"
+    },
+    { a: "Bicep", t: "Glue", c: "vibe_bridge_uk", y: "[RAVE][NOSTALGIA]", u: "", s: "Hands-up bittersweet—pure UK memory foam.", q: "https://www.youtube.com/results?search_query=Bicep+Glue"
+    },
+    { a: "Bicep", t: "Orca", c: "vibe_bridge_uk", y: "[DRIVE][CLEAN]", u: "", s: "Motorik momentum with submerged emotion.", q: "https://www.youtube.com/results?search_query=Bicep+Orca"
+    },
+    { a: "Bicep", t: "Kites", c: "vibe_bridge_uk", y: "[FLOAT][BRK]", u: "", s: "Lift and drift—bright air, soft bass.", q: "https://www.youtube.com/results?search_query=Bicep+Kites"
+    },
+    { a: "Bicep", t: "Vespa", c: "vibe_bridge_uk", y: "[SPRINT][CLUB]", u: "", s: "Fast, playful, and sharply engineered.", q: "https://www.youtube.com/results?search_query=Bicep+Vespa"
+    },
+    { a: "Bicep", t: "Ayaya", c: "vibe_bridge_uk", y: "[CHANT][LOOP]", u: "", s: "A vocal hook as a circuit—hypnotic repetition.", q: "https://www.youtube.com/results?search_query=Bicep+Ayaya"
+    },
+    { a: "Bicep", t: "Spring", c: "vibe_bridge_uk", y: "[BLOOM][PULSE]", u: "", s: "Warming synths; steady uplift without cheese.", q: "https://www.youtube.com/results?search_query=Bicep+Spring"
+    },
+    { a: "Bicep", t: "Drift", c: "vibe_bridge_uk", y: "[DRIFT][MIN]", u: "", s: "Patient groove—small changes, big effect.", q: "https://www.youtube.com/results?search_query=Bicep+Drift"
+    },
+    { a: "Bicep", t: "Opal", c: "vibe_bridge_uk", y: "[GLOW][CLUB]", u: "", s: "Shimmering chords in a late-night engine.", q: "https://www.youtube.com/results?search_query=Bicep+Opal"
+    },
+    { a: "Bicep", t: "Rain", c: "vibe_bridge_uk", y: "[MELT][WASH]", u: "", s: "Rainfall as rhythm—soft pressure, wide space.", q: "https://www.youtube.com/results?search_query=Bicep+Rain"
+    },
+    // --- DUB / NOIR MEMORY ---
+    { a: "Burial", t: "Archangel", c: "vibe_dub_noir", y: "[DUB][GHOST]", u: "", s: "Haunted garage—rain, static, and a human ache.", q: "https://www.youtube.com/results?search_query=Burial+Archangel"
+    },
+    { a: "Burial", t: "Near Dark", c: "vibe_dub_noir", y: "[DUB][FOG]", u: "", s: "Low light, soft impact—sub-bass in the mist.", q: "https://www.youtube.com/results?search_query=Burial+Near+Dark"
+    },
+    { a: "Burial", t: "Ghost Hardware", c: "vibe_dub_noir", y: "[STEEL][DUB]", u: "", s: "Clanking city percussion with deep, warm subs.", q: "https://www.youtube.com/results?search_query=Burial+Ghost+Hardware"
+    },
+    { a: "Burial", t: "Etched Headplate", c: "vibe_dub_noir", y: "[HUSH][NOIR]", u: "", s: "A slow dissolve—melody buried under weather.", q: "https://www.youtube.com/results?search_query=Burial+Etched+Headplate"
+    },
+    { a: "Burial", t: "In McDonalds", c: "vibe_dub_noir", y: "[FIELD][GHOST]", u: "", s: "Everyday ambience turned into sacred noise.", q: "https://www.youtube.com/results?search_query=Burial+In+McDonalds"
+    },
+    { a: "Burial", t: "Shell of Light", c: "vibe_dub_noir", y: "[CHOIR][DUB]", u: "", s: "Tender vocal shards over nocturnal bass.", q: "https://www.youtube.com/results?search_query=Burial+Shell+of+Light"
+    },
+    { a: "Burial", t: "Raver", c: "vibe_dub_noir", y: "[RAVE][DUB]", u: "", s: "Rave as memory-loop: distant sirens, distant joy.", q: "https://www.youtube.com/results?search_query=Burial+Raver"
+    },
+    // --- HYPERSPACE / CLEAN PRESSURE ---
+    { a: "Jon Hopkins", t: "We Disappear", c: "vibe_hyperspace", y: "[SURGE][SYNTH]", u: "", s: "A nervous system learning to glow.", q: "https://www.youtube.com/results?search_query=Jon+Hopkins+We+Disappear"
+    },
+    { a: "Jon Hopkins", t: "Open Eye Signal", c: "vibe_hyperspace", y: "[DRIVE][TECH]", u: "", s: "Iconic forward-thrust: controlled, huge, lucid.", q: "https://www.youtube.com/results?search_query=Jon+Hopkins+Open+Eye+Signal"
+    },
+    { a: "Jon Hopkins", t: "Breathe This Air", c: "vibe_hyperspace", y: "[WAVE][AIR]", u: "", s: "Breath as texture—wide, luminous, calm.", q: "https://www.youtube.com/results?search_query=Jon+Hopkins+Breathe+This+Air"
+    },
+    { a: "Jon Hopkins", t: "Collider", c: "vibe_hyperspace", y: "[IMPACT][RUSH]", u: "", s: "Mass and motion—beautiful overload.", q: "https://www.youtube.com/results?search_query=Jon+Hopkins+Collider"
+    },
+    { a: "Jon Hopkins", t: "Abandon Window", c: "vibe_hyperspace", y: "[AMBI][GLASS]", u: "", s: "Suspended chords—time slows, edges soften.", q: "https://www.youtube.com/results?search_query=Jon+Hopkins+Abandon+Window"
+    },
+    { a: "Jon Hopkins", t: "Form by Firelight", c: "vibe_hyperspace", y: "[GLOW][AMBI]", u: "", s: "Warm resonance like a night engine idling.", q: "https://www.youtube.com/results?search_query=Jon+Hopkins+Form+by+Firelight"
+    },
+    { a: "Jon Hopkins", t: "Immunity", c: "vibe_hyperspace", y: "[RITUAL][TECH]", u: "", s: "Long-form catharsis—precision turning feral.", q: "https://www.youtube.com/results?search_query=Jon+Hopkins+Immunity"
+    },
+    // --- GLITCH CHOIR / MACHINE VOICE ---
+    { a: "Holly Herndon", t: "Birth", c: "vibe_glitch_choir", y: "[CHOIR][GLITCH]", u: "", s: "A choral system booting up and blinking.", q: "https://www.youtube.com/results?search_query=Holly+Herndon+Birth"
+    },
+    { a: "Holly Herndon", t: "Eternal", c: "vibe_glitch_choir", y: "[VOICE][GRID]", u: "", s: "Human warmth inside a hard digital lattice.", q: "https://www.youtube.com/results?search_query=Holly+Herndon+Eternal"
+    },
+    { a: "Holly Herndon", t: "Frontier", c: "vibe_glitch_choir", y: "[PULSE][EDGE]", u: "", s: "Forward-stepping rhythm; sharp, alive, strange.", q: "https://www.youtube.com/results?search_query=Holly+Herndon+Frontier"
+    },
+    { a: "Holly Herndon", t: "Canaan (Live Training)", c: "vibe_glitch_choir", y: "[RITUAL][DATA]", u: "", s: "Training-room liturgy—voices as parameters.", q: "https://www.youtube.com/results?search_query=Holly+Herndon+Canaan+%28Live+Training%29"
+    },
+    { a: "Holly Herndon", t: "Godmother", c: "vibe_glitch_choir", y: "[RAVE][GLITCH]", u: "", s: "Club pressure meets choral weirdness.", q: "https://www.youtube.com/results?search_query=Holly+Herndon+Godmother"
+    },
+    { a: "Holly Herndon", t: "Chorus", c: "vibe_glitch_choir", y: "[CHOIR][SWARM]", u: "", s: "A swarm of voices forming one bright creature.", q: "https://www.youtube.com/results?search_query=Holly+Herndon+Chorus"
+    },
+    { a: "Holly Herndon", t: "Swim", c: "vibe_glitch_choir", y: "[FLOAT][VOICE]", u: "", s: "Gentle drift—digital water, human breath.", q: "https://www.youtube.com/results?search_query=Holly+Herndon+Swim"
+    },
+    { a: "Holly Herndon", t: "Morning Sun", c: "vibe_glitch_choir", y: "[SOFT][AURA]", u: "", s: "A tender close—glow through the circuitry.", q: "https://www.youtube.com/results?search_query=Holly+Herndon+Morning+Sun"
+    },
+    // --- ART SPEECH / TRANSMISSION POETRY ---
+    { a: "Laurie Anderson", t: "O Superman", c: "vibe_art_speech", y: "[SPEECH][DRONE]", u: "", s: "Iconic minimal spell—voice, loop, dread, devotion.", q: "https://www.youtube.com/results?search_query=Laurie+Anderson+O+Superman"
+    },
+    { a: "Laurie Anderson", t: "From the Air", c: "vibe_art_speech", y: "[SPEECH][PROP]", u: "", s: "Instructional surrealism—public address as art.", q: "https://www.youtube.com/results?search_query=Laurie+Anderson+From+the+Air"
+    },
+    { a: "Laurie Anderson", t: "Born, Never Asked", c: "vibe_art_speech", y: "[SPEECH][CITY]", u: "", s: "Urban mantra—identity as a repeated signal.", q: "https://www.youtube.com/results?search_query=Laurie+Anderson+Born%2C+Never+Asked"
+    },
+    { a: "Laurie Anderson", t: "Big Science", c: "vibe_art_speech", y: "[SPEECH][COLD]", u: "", s: "Cool narration over sparse, clinical synth.", q: "https://www.youtube.com/results?search_query=Laurie+Anderson+Big+Science"
+    },
+    { a: "Laurie Anderson", t: "Let X=X", c: "vibe_art_speech", y: "[MATH][SPEECH]", u: "", s: "Equation-poetry; logic turned into chant.", q: "https://www.youtube.com/results?search_query=Laurie+Anderson+Let+X%3DX"
+    },
+    // --- COSMIC JAZZ / STAR-ENGINE ---
+    { a: "The Comet Is Coming", t: "Because the End Is Really the Beginning", c: "vibe_cosmic_jazz", y: "[COSMIC][RITUAL]", u: "", s: "Opening fanfare—portals creak open.", q: "https://www.youtube.com/results?search_query=The+Comet+Is+Coming+Because+the+End+Is+Really+the+Beginning"
+    },
+    { a: "The Comet Is Coming", t: "Birth of Creation", c: "vibe_cosmic_jazz", y: "[COSMIC][SPARK]", u: "", s: "Creation-myth energy—synth flare + live drums.", q: "https://www.youtube.com/results?search_query=The+Comet+Is+Coming+Birth+of+Creation"
+    },
+    { a: "The Comet Is Coming", t: "Summon the Fire", c: "vibe_cosmic_jazz", y: "[COSMIC][DRIVE]", u: "", s: "A proper ignition sequence—fast and bright.", q: "https://www.youtube.com/results?search_query=The+Comet+Is+Coming+Summon+the+Fire"
+    },
+    { a: "The Comet Is Coming", t: "Blood of the Past", c: "vibe_cosmic_jazz", y: "[COSMIC][SPOKEN]", u: "", s: "Spoken force over surging space-jazz momentum.", q: "https://www.youtube.com/results?search_query=The+Comet+Is+Coming+Blood+of+the+Past"
+    },
+    { a: "The Comet Is Coming", t: "Super Zodiac", c: "vibe_cosmic_jazz", y: "[COSMIC][PULSE]", u: "", s: "Angular melody—constellation math with bite.", q: "https://www.youtube.com/results?search_query=The+Comet+Is+Coming+Super+Zodiac"
+    },
+    { a: "The Comet Is Coming", t: "Astral Flying", c: "vibe_cosmic_jazz", y: "[COSMIC][FLOAT]", u: "", s: "Weightless propulsion—like drifting above the beat.", q: "https://www.youtube.com/results?search_query=The+Comet+Is+Coming+Astral+Flying"
+    },
+    { a: "The Comet Is Coming", t: "Timewave Zero", c: "vibe_cosmic_jazz", y: "[COSMIC][TIME]", u: "", s: "Time dilation—rolling drums, shimmering dread.", q: "https://www.youtube.com/results?search_query=The+Comet+Is+Coming+Timewave+Zero"
+    },
+    { a: "The Comet Is Coming", t: "Unity", c: "vibe_cosmic_jazz", y: "[COSMIC][UPLIFT]", u: "", s: "Collective lift—bright horn line through the fog.", q: "https://www.youtube.com/results?search_query=The+Comet+Is+Coming+Unity"
+    },
+    { a: "The Comet Is Coming", t: "The Universe Wakes Up", c: "vibe_cosmic_jazz", y: "[COSMIC][DAWN]", u: "", s: "Wide-angle finale—dawn breaking on metal and air.", q: "https://www.youtube.com/results?search_query=The+Comet+Is+Coming+The+Universe+Wakes+Up"
+    },
+    { a: "The Comet Is Coming", t: "Code", c: "vibe_cosmic_jazz", y: "[COSMIC][TECH]", u: "", s: "Sax + synth as a running program.", q: "https://www.youtube.com/results?search_query=The+Comet+Is+Coming+Code"
+    },
+    { a: "The Comet Is Coming", t: "Technicolour", c: "vibe_cosmic_jazz", y: "[COSMIC][COLOR]", u: "", s: "Bright spectrum rush—clean, fast, ecstatic.", q: "https://www.youtube.com/results?search_query=The+Comet+Is+Coming+Technicolour"
+    },
+    { a: "The Comet Is Coming", t: "Aftermath", c: "vibe_cosmic_jazz", y: "[COSMIC][SMOKE]", u: "", s: "Post-impact glide—embers and high beams.", q: "https://www.youtube.com/results?search_query=The+Comet+Is+Coming+Aftermath"
+    },
+];

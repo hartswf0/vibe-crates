@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>SAMPLE CRATE 120 // VIBE SHIFT</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --panel: #111;
+            --border: #222;
+            --accent: #00ff88;
+            --accent2: #ff6b35;
+            --text: #e8e8e8;
+            --dim: #666;
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'SF Mono', 'Monaco', monospace;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .app {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding-top: var(--safe-top);
+            padding-bottom: var(--safe-bottom);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+            background: #080808;
+        }
+
+        .brand {
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--accent);
+            letter-spacing: 2px;
+        }
+
+        .mode-pills {
+            display: flex;
+            gap: 4px;
+        }
+
+        .pill {
+            padding: 4px 8px;
+            font-size: 8px;
+            border-radius: 10px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            color: var(--dim);
+            cursor: pointer;
+        }
+
+        .pill.on {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        .video-section {
+            flex-shrink: 0;
+            background: #000;
+        }
+
+        .video-wrap {
+            position: relative;
+            width: 100%;
+            padding-bottom: 40%;
+        }
+
+        .video-wrap iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .now-playing {
+            padding: 10px 12px;
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .np-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .np-main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .np-artist {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--accent);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .np-track {
+            font-size: 10px;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .np-tags {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 8px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            text-transform: uppercase;
+        }
+
+        .tag.cat {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--accent);
+        }
+
+        .tag.sonic {
+            background: rgba(255, 107, 53, 0.1);
+            color: var(--accent2);
+            max-width: 250px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tag.year {
+            color: var(--dim);
+            border: 1px solid var(--border);
+        }
+
+        .controls {
+            display: flex;
+            gap: 6px;
+            padding: 10px 12px;
+            background: #080808;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ctrl {
+            flex: 1;
+            padding: 12px 8px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .ctrl:active {
+            transform: scale(0.95);
+        }
+
+        .ctrl.primary {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        .cat-bar {
+            display: flex;
+            gap: 4px;
+            padding: 8px 12px;
+            overflow-x: auto;
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .cat-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cat-chip {
+            flex-shrink: 0;
+            padding: 5px 10px;
+            font-size: 9px;
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--dim);
+            cursor: pointer;
+            letter-spacing: 1px;
+        }
+
+        .cat-chip.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        .cat-chip span {
+            opacity: 0.6;
+            margin-left: 2px;
+        }
+
+        .track-list {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .track {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .track.playing {
+            background: rgba(0, 255, 136, 0.08);
+            border-left: 2px solid var(--accent);
+        }
+
+        .t-num {
+            width: 20px;
+            font-size: 9px;
+            color: var(--dim);
+            text-align: center;
+        }
+
+        .t-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .t-artist {
+            font-size: 10px;
+            color: var(--accent);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .t-title {
+            font-size: 9px;
+            color: var(--text);
+        }
+
+        .t-meta {
+            font-size: 8px;
+            color: var(--dim);
+            text-align: right;
+        }
+
+        .t-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mini {
+            font-size: 9px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            background: #0f0f0f;
+            border: 1px solid var(--border);
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .mini:active {
+            transform: scale(0.97);
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 12px;
+            background: #080808;
+            border-top: 1px solid var(--border);
+            font-size: 9px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-val {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .stat-lbl {
+            color: var(--dim);
+            font-size: 7px;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="header">
+            <span class="brand" id="brand">VIBE SHIFT // 120</span>
+            <div class="mode-pills">
+                <div class="pill on" id="p-auto">AUTO</div>
+                <div class="pill" id="p-shuf">SHUF</div>
+                <div class="pill" id="p-loop">LOOP</div>
+            </div>
+        </div>
+        <div class="video-section">
+            <div class="video-wrap">
+                <div id="player"></div>
+            </div>
+        </div>
+        <div class="now-playing">
+            <div class="np-row">
+                <div class="np-main">
+                    <div class="np-artist" id="np-artist">Select Frequency</div>
+                    <div class="np-track" id="np-track">--</div>
+                </div>
+                <button class="mini" id="btn-search">SEARCH</button>
+            </div>
+            <div class="np-tags">
+                <span class="tag cat" id="np-cat">--</span>
+                <span class="tag year" id="np-year">--</span>
+                <span class="tag sonic" id="np-sonic">--</span>
+            </div>
+        </div>
+        <div class="controls">
+            <button class="ctrl" id="btn-prev">PREV</button>
+            <button class="ctrl primary" id="btn-next">NEXT</button>
+            <button class="ctrl" id="btn-rand">RND</button>
+        </div>
+        <div class="cat-bar" id="cats"></div>
+        <div class="track-list" id="list"></div>
+        <div class="footer">
+            <div class="stat"><span class="stat-val" id="s-total">0</span><br><span class="stat-lbl">TOTAL</span></div>
+            <div class="stat"><span class="stat-val" id="s-show">0</span><br><span class="stat-lbl">SHOWING</span></div>
+            <div class="stat"><span class="stat-val" id="s-played">0</span><br><span class="stat-lbl">PLAYED</span>
+            </div>
+            <div class="stat"><span class="stat-val" id="s-idx">0</span><br><span class="stat-lbl">INDEX</span></div>
+        </div>
+    </div>
+    <script>
+        const A = [
+            { a: "Gil Scott-Heron & Jamie xx", t: "NY Is Killing Me", c: "vibe", y: 2011, u: "https://www.youtube.com/watch?v=ONfou8zA-u4", b: "https://www.youtube.com/watch?v=W7c3wRzUUjs", s: "[VOX] — minimalist dub-soul" },
+            { a: "The Comet Is Coming", t: "Summon The Fire", c: "vibe", y: 2019, u: "https://www.youtube.com/watch?v=9yEM-IgR69Y", b: "https://www.youtube.com/watch?v=bfVFMRwALHg", s: "— spiritual psych-fire" },
+            { a: "Laurie Anderson", t: "O Superman", c: "texture", y: 1982, u: "https://www.youtube.com/watch?v=Vkfpi2H8tOE", b: "https://www.youtube.com/watch?v=DPqOg6f2xFg", s: "[VOX] — vocoder art-pop loop" },
+            { a: "Holly Herndon", t: "Morning Sun", c: "texture", y: 2015, u: "https://www.youtube.com/watch?v=R3Z1lEx8khM", b: "https://www.youtube.com/watch?v=iehmprqF6CQ", s: "— digital organic processing" },
+            { a: "Crooked Colours", t: "Hold On", c: "vibe", y: 2017, u: "https://www.youtube.com/watch?v=gcNhu74DbOE", b: "https://www.youtube.com/watch?v=pUxG7MigheM", s: "— clean moody pulse" },
+            { a: "Sons of Kemet", t: "My Queen Is Ada Eastman", c: "vibe", y: 2018, u: "https://www.youtube.com/watch?v=6UQYiej5F7U", b: "https://www.youtube.com/watch?v=T19IrfO3-LQ", s: "— heavy tuba-jazz percussion" },
+            { a: "Nicolas Jaar", t: "Mi Mujer", c: "vibe", y: 2010, u: "https://www.youtube.com/watch?v=LUZS6mx1aOY", b: "https://www.youtube.com/watch?v=OH_F0RwZ-zY", s: "— slow-burn organic house" },
+            { a: "Burial", t: "Archangel", c: "texture", y: 2007, u: "https://www.youtube.com/watch?v=8k_f2QK77ew", b: "https://www.youtube.com/watch?v=egbi0FK2_2o", s: "— pitch-shifted hauntology" },
+            { a: "Yussef Kamaal", t: "Lowrider", c: "vibe", y: 2016, u: "https://www.youtube.com/watch?v=g5DcGcCoOUY", b: "https://www.youtube.com/watch?v=5lQTIhpN1cY", s: "— London broken-beat jazz" },
+            { a: "Floating Points", t: "LesAlpx", c: "vibe", y: 2019, u: "https://www.youtube.com/watch?v=chV4cLWpcfA", b: "https://www.youtube.com/watch?v=AvQ9Pr1_JPs", s: "— raw analog synth driving grit" },
+            { a: "Kaitlyn Aurelia Smith", t: "Existence", c: "texture", y: 2016, u: "https://www.youtube.com/watch?v=hlqJ40xDbdY", b: "https://www.youtube.com/watch?v=IGCp9KeY9TU", s: "— Buchla modular synth bliss" },
+            { a: "Arthur Russell", t: "Go Bang! #5", c: "texture", y: 1982, u: "https://www.youtube.com/watch?v=PpI09vSAHgk", b: "https://www.youtube.com/watch?v=rO3uFWhpD9E", s: "— avant-disco cello freakout" },
+            { a: "Sudan Archives", t: "Come Meh Way", c: "vibe", y: 2017, u: "https://www.youtube.com/watch?v=hHmzQw0KDPo", b: "https://www.youtube.com/watch?v=5InnBT3OP-U", s: "— North African fiddle loop" },
+            { a: "Moor Mother", t: "After Images", c: "texture", y: 2019, u: "https://www.youtube.com/watch?v=VeZIqemkrD8", b: "https://www.youtube.com/watch?v=S3d0Wzz-Olo", s: "[VOX] — industrial jazz spoken-word" },
+            { a: "Kelela", t: "LMK", c: "vibe", y: 2017, u: "https://www.youtube.com/watch?v=ePi5BLJogyA", b: "https://www.youtube.com/watch?v=HFqHHB2n7SU", s: "[VOX] — future club R&B" },
+            { a: "Sun Ra", t: "Space Is The Place", c: "vibe", y: 1973, u: "https://www.youtube.com/watch?v=HM0AYN0Bxpw", b: "https://www.youtube.com/watch?v=haOMBnQwPuI", s: "— cosmic jazz architecture" },
+            { a: "Shabaka and the Ancestors", t: "Joy", c: "vibe", y: 2016, u: "https://www.youtube.com/watch?v=EwjWrrYQFoQ", b: "https://www.youtube.com/watch?v=3autHg69V4k", s: "[VOX] — spiritual chant energy" },
+            { a: "Oneohtrix Point Never", t: "Replica", c: "texture", y: 2011, u: "https://www.youtube.com/watch?v=WEGp4YQP_Ck", b: "https://www.youtube.com/watch?v=H0ZnA4MuCkg", s: "— plunderphonic piano loops" },
+            { a: "Mount Kimbie", t: "Mayor", c: "vibe", y: 2010, u: "https://www.youtube.com/watch?v=vdNyeFFtuUI", b: "https://www.youtube.com/watch?v=2TaOli1FVQI", s: "— dusty post-dubstep pocket" },
+            { a: "Flying Lotus", t: "Never Catch Me", c: "vibe", y: 2014, u: "https://www.youtube.com/watch?v=2lXh2n0aPyw", b: "https://www.youtube.com/watch?v=7YHlKmkRsDQ", s: "— Thundercat bass + hyper-jazz" }
+        ];
+
+        let Q = [...A], idx = -1, played = 0, cat = 'all', auto = true, shuf = false, loop = false, P = null;
+
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+
+        function onYouTubeIframeAPIReady() { }
+
+        function vid(u) {
+            if (!u) return null;
+            const m = u.match(/(?:v=|\/shorts\/|youtu\.be\/)([^&?\/]+)/);
+            return m ? m[1] : null;
+        }
+
+        function bestSearch(x) {
+            return x.b || x.q || ("https://www.youtube.com/results?search_query=" + encodeURIComponent((x.a || "") + " " + (x.t || "")));
+        }
+
+        function openSearch(x) {
+            window.open(bestSearch(x), "_blank", "noopener,noreferrer");
+        }
+
+        function setNowPlaying(x, i) {
+            document.getElementById('np-artist').textContent = x?.a || "—";
+            document.getElementById('np-track').textContent = x?.t || "—";
+            document.getElementById('np-cat').textContent = (x?.c || "--");
+            document.getElementById('np-year').textContent = (x?.y ?? "--");
+            document.getElementById('np-sonic').textContent = (x?.s || "--");
+            document.getElementById('s-idx').textContent = (i >= 0 ? (i + 1) : 0);
+        }
+
+        function load(i) {
+            if (i < 0 || i >= Q.length) return;
+            const x = Q[i];
+            const id = vid(x.u);
+
+            idx = i;
+            setNowPlaying(x, i);
+
+            if (!id) {
+                render();
+                openSearch(x);
+                return;
+            }
+
+            if (P && P.loadVideoById) P.loadVideoById(id);
+            else {
+                P = new YT.Player('player', {
+                    videoId: id,
+                    playerVars: { autoplay: 1, controls: 1, modestbranding: 1, rel: 0 },
+                    events: { onStateChange: onEnd }
+                });
+            }
+            render();
+        }
+
+        function onEnd(e) {
+            if (e.data === 0) {
+                played++;
+                document.getElementById('s-played').textContent = played;
+                if (loop && P) { P.seekTo(0); P.playVideo(); }
+                else if (auto) next();
+            }
+        }
+
+        function next() {
+            if (!Q.length) return;
+            const ni = shuf ? Math.floor(Math.random() * Q.length) : (idx + 1) % Q.length;
+            load(ni);
+        }
+        function prev() {
+            if (!Q.length) return;
+            const pi = (idx <= 0) ? (Q.length - 1) : (idx - 1);
+            load(pi);
+        }
+        function rand() {
+            if (!Q.length) return;
+            load(Math.floor(Math.random() * Q.length));
+        }
+
+        function filter(c) {
+            cat = c;
+            Q = (c === 'all') ? [...A] : A.filter(x => x.c === c);
+            idx = -1;
+            document.querySelectorAll('.cat-chip').forEach(e => e.classList.toggle('active', e.dataset.c === c));
+            stats();
+            setNowPlaying(null, -1);
+            render();
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, s => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[s]));
+        }
+
+        function render() {
+            const list = document.getElementById('list');
+            list.innerHTML = Q.map((x, i) => {
+                const playing = (i === idx) ? 'playing' : '';
+                const hasVid = !!vid(x.u);
+                const action = hasVid ? '▶' : '🔎';
+                return `
+                <div class="track ${playing}" data-i="${i}">
+                    <div class="t-num">${i + 1}</div>
+                    <div class="t-info">
+                        <div class="t-artist">${escapeHtml(x.a || "")}</div>
+                        <div class="t-title">${escapeHtml(x.t || "")}</div>
+                    </div>
+                    <div class="t-right">
+                        <button class="mini" data-act="play">${action}</button>
+                        <div class="t-meta"><span class="t-cat">${escapeHtml((x.c || "").toUpperCase())}</span>${escapeHtml(String(x.y ?? "--"))}</div>
+                    </div>
+                </div>
+            `;
+            }).join('');
+
+            list.onclick = (ev) => {
+                const row = ev.target.closest('.track');
+                if (!row) return;
+                const i = Number(row.dataset.i);
+                const x = Q[i];
+                if (vid(x.u)) load(i);
+                else openSearch(x);
+            };
+        }
+
+        function cats() {
+            const c = {}; A.forEach(x => c[x.c] = (c[x.c] || 0) + 1);
+            const keys = Object.keys(c).sort();
+            document.getElementById('cats').innerHTML =
+                `<div class="cat-chip active" data-c="all">ALL<span>${A.length}</span></div>` +
+                keys.map(k => `<div class="cat-chip" data-c="${k}">${k.toUpperCase()}<span>${c[k]}</span></div>`).join('');
+
+            document.getElementById('cats').onclick = (ev) => {
+                const chip = ev.target.closest('.cat-chip');
+                if (!chip) return;
+                filter(chip.dataset.c);
+            };
+        }
+
+        function stats() {
+            document.getElementById('s-total').textContent = A.length;
+            document.getElementById('s-show').textContent = Q.length;
+        }
+
+        document.getElementById('btn-next').onclick = next;
+        document.getElementById('btn-prev').onclick = prev;
+        document.getElementById('btn-rand').onclick = rand;
+        document.getElementById('p-auto').onclick = function () { auto = !auto; this.classList.toggle('on', auto); };
+        document.getElementById('p-shuf').onclick = function () { shuf = !shuf; this.classList.toggle('on', shuf); };
+        document.getElementById('p-loop').onclick = function () { loop = !loop; this.classList.toggle('on', loop); };
+
+        document.getElementById('btn-search').onclick = function () {
+            if (idx >= 0 && idx < Q.length) openSearch(Q[idx]);
+        };
+
+        cats(); stats(); render();
+    </script>
+</body>
+
+</html>
