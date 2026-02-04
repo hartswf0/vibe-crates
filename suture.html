@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <title>THE DOUBLE LOGIC SUTURE</title>
+    <style>
+        :root {
+            --bg: #000;
+            --text: #ddd;
+            --accent: #fff;
+            --dim: #444;
+            --font: 'SF Mono', 'Monaco', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            padding: 12px;
+            font-size: 10px;
+            letter-spacing: 2px;
+            border-bottom: 1px solid var(--dim);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 40px;
+            flex-shrink: 0;
+            z-index: 10;
+            background: #000;
+        }
+
+        .brand {
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .node-id {
+            color: var(--dim);
+        }
+
+        .main-stage {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            height: calc(100vh - 40px);
+        }
+
+        /* Image Layer */
+        .visual-layer {
+            flex: 2;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #050505;
+        }
+
+        .visual-layer img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .visual-layer img.loaded {
+            opacity: 1;
+        }
+
+        /* Info Overlay */
+        .info-overlay {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            pointer-events: none;
+        }
+
+        .node-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .node-desc {
+            font-size: 11px;
+            font-style: italic;
+            opacity: 0.8;
+            max-width: 80%;
+        }
+
+        /* Audio / Controls Layer */
+        .control-layer {
+            flex: 1;
+            background: #0a0a0a;
+            border-top: 1px solid var(--dim);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Hidden Player */
+        #player-container {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .track-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .track-item {
+            padding: 8px;
+            border-bottom: 1px solid #1a1a1a;
+            display: flex;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .track-item:hover {
+            background: #111;
+        }
+
+        .track-item.active {
+            color: var(--accent);
+            background: #151515;
+            border-left: 2px solid #fff;
+        }
+
+        .track-artist {
+            font-weight: bold;
+            margin-right: 6px;
+        }
+
+        .track-title {
+            opacity: 0.8;
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            height: 50px;
+            display: flex;
+            border-top: 1px solid var(--dim);
+            flex-shrink: 0;
+        }
+
+        .nav-btn {
+            flex: 1;
+            background: #000;
+            border: none;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-right: 1px solid #1a1a1a;
+        }
+
+        .nav-btn:last-child {
+            border-right: none;
+        }
+
+        .nav-btn:active {
+            background: #222;
+        }
+
+        .nav-center {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            color: var(--dim);
+        }
+
+        .scanner {
+            width: 100%;
+            height: 2px;
+            background: #222;
+            margin-top: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scanner-bar {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            background: #fff;
+            transition: width 0.3s;
+        }
+
+        /* Desktop Layout Override */
+        @media (min-width: 768px) {
+            .main-stage {
+                flex-direction: row;
+            }
+
+            .visual-layer {
+                flex: 3;
+                border-right: 1px solid var(--dim);
+            }
+
+            .control-layer {
+                flex: 1;
+                border-top: none;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="brand">DOUBLE LOGIC SUTURE</div>
+        <div class="node-id" id="node-id">-- / --</div>
+    </div>
+
+    <div class="main-stage">
+
+        <!-- VISUAL -->
+        <div class="visual-layer">
+            <img id="main-image" src="" alt="Node Visualization">
+            <div class="info-overlay">
+                <div class="node-title" id="node-title">LOADING...</div>
+                <div class="node-desc" id="node-desc">Initializing neural lattice...</div>
+            </div>
+        </div>
+
+        <!-- AUDIO / CONTROLS -->
+        <div class="control-layer">
+            <div id="player-container">
+                <div id="player"></div>
+            </div>
+
+            <div class="track-list" id="track-list">
+                <!-- Tracks injected here -->
+            </div>
+
+            <div class="nav-bar">
+                <button class="nav-btn" onclick="prevNode()">PREV</button>
+                <div class="nav-center">
+                    <span id="nav-info">NODE 1</span>
+                    <div class="scanner">
+                        <div class="scanner-bar" id="progress"></div>
+                    </div>
+                </div>
+                <button class="nav-btn" onclick="nextNode()">NEXT</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        // INLINED DATA TO BYPASS CORS
+        const DATA = {
+            "project": "The Double Logic Suture",
+            "description": "A recursive gallery of 12 states.",
+            "nodes": [
+                {
+                    "id": "1",
+                    "image": "THE DOUBLE LOGIC SUTURE (1)/1.png",
+                    "title": "THRESHOLD STATE",
+                    "description": "Entry point. The logic is yet to split.",
+                    "crate": [
+                        { "a": "Oneohtrix Point Never", "t": "Chrome Country", "u": "https://www.youtube.com/watch?v=c5u7IYJBdc0" },
+                        { "a": "Tim Hecker", "t": "Virgins", "u": "https://www.youtube.com/watch?v=CuuvmP-9XnY" },
+                        { "a": "Boards of Canada", "t": "Ready Lets Go", "u": "https://www.youtube.com/watch?v=fCoMd4yGnww" }
+                    ]
+                },
+                {
+                    "id": "2",
+                    "image": "THE DOUBLE LOGIC SUTURE (1)/2.png",
+                    "title": "BINARY FOLD",
+                    "description": "Two minds attempting to occupy one coordinate.",
+                    "crate": [
+                        { "a": "Aphex Twin", "t": "Vordhosbn", "u": "https://www.youtube.com/watch?v=Q0q1gCsZykg" },
+                        { "a": "Autechre", "t": "Gantz Graf", "u": "https://www.youtube.com/watch?v=AyJfHU4tOUA" },
+                        { "a": "Squarepusher", "t": "Beep Street", "u": "https://www.youtube.com/watch?v=8kO_C5uPjKU" }
+                    ]
+                },
+                {
+                    "id": "3",
+                    "image": "THE DOUBLE LOGIC SUTURE (1)/3.png",
+                    "title": "RECURSIVE MIRROR",
+                    "description": "The reflection begins to lag behind the object.",
+                    "crate": [
+                        { "a": "Flying Lotus", "t": "Zodiac Shit", "u": "https://www.youtube.com/watch?v=wtjZOf0WmdE" },
+                        { "a": "Thundercat", "t": "Them Changes", "u": "https://www.youtube.com/watch?v=GNCd_ERZvZM" },
+                        { "a": "Teebs", "t": "While You Doooo", "u": "https://www.youtube.com/watch?v=HEbd1yXfT00" }
+                    ]
+                },
+                {
+                    "id": "4",
+                    "image": "THE DOUBLE LOGIC SUTURE (1)/4.png",
+                    "title": "GLITCH ARTIFACT",
+                    "description": "Memory leaks into the visual field.",
+                    "crate": [
+                        { "a": "Ryoji Ikeda", "t": "data.matrix", "u": "https://www.youtube.com/watch?v=hShY6xZWVGE" },
+                        { "a": "Alva Noto", "t": "Uni Acronym", "u": "https://www.youtube.com/watch?v=d_DK6XwVp_g" },
+                        { "a": "Byetone", "t": "Plastic Star", "u": "https://www.youtube.com/watch?v=Bmqc6q_b7pE" }
+                    ]
+                },
+                {
+                    "id": "5",
+                    "image": "THE DOUBLE LOGIC SUTURE (1)/5.png",
+                    "title": "ORGANIC DECAY",
+                    "description": "The machine dreams of compost.",
+                    "crate": [
+                        { "a": "Arca", "t": "Piel", "u": "https://www.youtube.com/watch?v=9g0H5yDkHxo" },
+                        { "a": "Björk", "t": "All is Full of Love", "u": "https://www.youtube.com/watch?v=u0qb2A0P8Q0" },
+                        { "a": "SOPHIE", "t": "Is It Cold In The Water?", "u": "https://www.youtube.com/watch?v=q0rx0qVdC-I" }
+                    ]
+                },
+                {
+                    "id": "6",
+                    "image": "THE DOUBLE LOGIC SUTURE (1)/6.png",
+                    "title": "SYSTEM HALT",
+                    "description": "Pause. Buffer. The wait is the content.",
+                    "crate": [
+                        { "a": "Burial", "t": "Forgive", "u": "https://www.youtube.com/watch?v=sHm_wj555KI" },
+                        { "a": "Andy Stott", "t": "Numb", "u": "https://www.youtube.com/watch?v=dvKV-jLpbd0" },
+                        { "a": "Demdike Stare", "t": "Hashshashin Chant", "u": "https://www.youtube.com/watch?v=52sS3gYl2QY" }
+                    ]
+                },
+                {
+                    "id": "7",
+                    "image": "THE DOUBLE LOGIC SUTURE (1)/7.png",
+                    "title": "HYPER REAL",
+                    "description": "Sharper than the eye can permit.",
+                    "crate": [
+                        { "a": "Rustie", "t": "Slasherr", "u": "https://www.youtube.com/watch?v=stxtb_mX6p0" },
+                        { "a": "Hudson Mohawke", "t": "Chimes", "u": "https://www.youtube.com/watch?v=k_MWDJO2qJQ" },
+                        { "a": "SOPHIE", "t": "Hard", "u": "https://www.youtube.com/watch?v=m_S0qCeA-pc" }
+                    ]
+                },
+                {
+                    "id": "8",
+                    "image": "THE DOUBLE LOGIC SUTURE (1)/8.png",
+                    "title": "LATENT SPACE",
+                    "description": "Coordinates between existing concepts.",
+                    "crate": [
+                        { "a": "Barker", "t": "Look How Hard I've Tried", "u": "https://www.youtube.com/watch?v=6K_X5g9e7xY" },
+                        { "a": "Caterina Barbieri", "t": "Pinnacles of You", "u": "https://www.youtube.com/watch?v=34wK7CJ_1oI" },
+                        { "a": "Lorenzo Senni", "t": "The Shape of Trance to Come", "u": "https://www.youtube.com/watch?v=6X_3Q-7lXQ4" }
+                    ]
+                },
+                {
+                    "id": "9",
+                    "image": "THE DOUBLE LOGIC SUTURE (1)/9.png",
+                    "title": "VOID POINTER",
+                    "description": "Looking at the nothing that looks back.",
+                    "crate": [
+                        { "a": "Grouper", "t": "Heavy Water/I'd Rather Be Sleeping", "u": "https://www.youtube.com/watch?v=ZmJMkG-zVp8" },
+                        { "a": "William Basinski", "t": "dlp 1.1", "u": "https://www.youtube.com/watch?v=qYOr8TlnqhY" },
+                        { "a": "Stars of the Lid", "t": "Requiem for Dying Mothers, Pt. 2", "u": "https://www.youtube.com/watch?v=v3dM4vMhQ5g" }
+                    ]
+                },
+                {
+                    "id": "10",
+                    "image": "THE DOUBLE LOGIC SUTURE (1)/10.png",
+                    "title": "NEURAL STATIC",
+                    "description": "Thinking about thinking about noise.",
+                    "crate": [
+                        { "a": "Fennesz", "t": "Endless Summer", "u": "https://www.youtube.com/watch?v=l8g_f-vYH6o" },
+                        { "a": "Oval", "t": "Do While", "u": "https://www.youtube.com/watch?v=dp_XJtB7n98" },
+                        { "a": "Gas", "t": "Pop 4", "u": "https://www.youtube.com/watch?v=1F_45pZT7pM" }
+                    ]
+                },
+                {
+                    "id": "11",
+                    "image": "THE DOUBLE LOGIC SUTURE (1)/11.png",
+                    "title": "DIGITAL FLORA",
+                    "description": "Flowers growing from the motherboard.",
+                    "crate": [
+                        { "a": "Plantasia", "t": "Plantasia", "u": "https://www.youtube.com/watch?v=Iuv8FBnbDq0" },
+                        { "a": "Susumu Yokota", "t": "Kodama", "u": "https://www.youtube.com/watch?v=XZ_dZ6x2X_g" },
+                        { "a": "Hiroshi Yoshimura", "t": "Green", "u": "https://www.youtube.com/watch?v=3qF_g5wT6y0" }
+                    ]
+                },
+                {
+                    "id": "12",
+                    "image": "THE DOUBLE LOGIC SUTURE (1)/12.png",
+                    "title": "EXIT STRATEGY",
+                    "description": "The logic completes its loop.",
+                    "crate": [
+                        { "a": "Brian Eno", "t": "An Ending (Ascent)", "u": "https://www.youtube.com/watch?v=aKw5mbcE7EY" },
+                        { "a": "Vangelis", "t": "Tears in Rain", "u": "https://www.youtube.com/watch?v=9a1o3OHGTcM" },
+                        { "a": "M83", "t": "Outro", "u": "https://www.youtube.com/watch?v=1T8wE0q5q1w" }
+                    ]
+                }
+            ]
+        };
+
+        let CUR_NODE = 0;
+        let CUR_TRACK = 0;
+        let PLAYER = null;
+        let YT_READY = false;
+
+        function onYouTubeIframeAPIReady() {
+            YT_READY = true;
+            if (DATA) loadPlayer();
+        }
+
+        function init() {
+            if (YT_READY) loadPlayer();
+            renderNode(0);
+        }
+
+        function loadPlayer() {
+            if (PLAYER) return;
+            // Load first track of first node to init
+            const firstId = vid(DATA.nodes[0].crate[0].u);
+            PLAYER = new YT.Player('player', {
+                height: '100%',
+                width: '100%',
+                videoId: firstId,
+                playerVars: {
+                    'playsinline': 1,
+                    'controls': 0, // Hiding controls for "gallery" feel
+                    'modestbranding': 1
+                },
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function vid(u) {
+            const m = u.match(/(?:v=|\/shorts\/|youtu\.be\/)([^&?\/]+)/);
+            return m ? m[1] : null;
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.ENDED) {
+                // Auto next track in current node
+                const node = DATA.nodes[CUR_NODE];
+                if (CUR_TRACK < node.crate.length - 1) {
+                    playTrack(CUR_NODE, CUR_TRACK + 1);
+                } else {
+                    // Start over (loop)
+                    playTrack(CUR_NODE, 0);
+                }
+            }
+        }
+
+        function renderNode(idx) {
+            if (!DATA || idx < 0 || idx >= DATA.nodes.length) return;
+            CUR_NODE = idx;
+            const node = DATA.nodes[idx];
+
+            // Update UI
+            document.getElementById('node-id').textContent = `${node.id} / ${DATA.nodes.length}`;
+            document.getElementById('node-title').textContent = node.title;
+            document.getElementById('node-desc').textContent = node.description;
+
+            const img = document.getElementById('main-image');
+            img.classList.remove('loaded');
+
+            // Pre-load image
+            const tempImg = new Image();
+            tempImg.onload = () => {
+                img.src = node.image;
+                img.classList.add('loaded');
+            };
+            tempImg.src = node.image;
+
+            // Render Tracks
+            renderTracks(node.crate);
+
+            // Update Prog Bar
+            const pct = ((idx + 1) / DATA.nodes.length) * 100;
+            document.getElementById('progress').style.width = `${pct}%`;
+            document.getElementById('nav-info').textContent = `NODE ${node.id}`;
+
+            // Auto-play first track of new node if player exists
+            playTrack(idx, 0);
+        }
+
+        function renderTracks(crate) {
+            const list = document.getElementById('track-list');
+            list.innerHTML = '';
+            crate.forEach((t, i) => {
+                const div = document.createElement('div');
+                div.className = `track-item ${i === CUR_TRACK ? 'active' : ''}`;
+                div.innerHTML = `<span class="track-artist">${t.a}</span> <span class="track-title">${t.t}</span>`;
+                div.onclick = () => playTrack(CUR_NODE, i);
+                list.appendChild(div);
+            });
+        }
+
+        function playTrack(nodeIdx, trackIdx) {
+            if (!PLAYER || !DATA) return;
+            const node = DATA.nodes[nodeIdx];
+            if (!node || !node.crate[trackIdx]) return;
+
+            CUR_TRACK = trackIdx;
+
+            // Highlight
+            const items = document.querySelectorAll('.track-item');
+            items.forEach((el, i) => {
+                if (i === trackIdx) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+
+            const id = vid(node.crate[trackIdx].u);
+            if (id) {
+                PLAYER.loadVideoById(id);
+            }
+        }
+
+        function nextNode() {
+            let n = CUR_NODE + 1;
+            if (n >= DATA.nodes.length) n = 0;
+            renderNode(n);
+        }
+
+        function prevNode() {
+            let n = CUR_NODE - 1;
+            if (n < 0) n = DATA.nodes.length - 1;
+            renderNode(n);
+        }
+
+        // Keyboard Nav
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextNode();
+            if (e.key === 'ArrowLeft') prevNode();
+        });
+
+        // Start initialization
+        init();
+
+    </script>
+</body>
+
+</html>
