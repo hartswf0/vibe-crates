@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+  />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>SHIPWRECKED FUTURISM CRATE 01</title>
+  <style>
+    :root{
+      --bg:#0a0a0a; --panel:#111; --border:#222;
+      --accent:#ff6b35; --accent2:#00ff88;
+      --text:#e8e8e8; --dim:#666;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);
+      font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+      touch-action:manipulation;-webkit-user-select:none;user-select:none;
+    }
+    .app{height:100%;display:flex;flex-direction:column;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)}
+    .header{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border);background:#080808}
+    .brand{font-size:11px;font-weight:800;color:var(--accent);letter-spacing:2px}
+    .mode-pills{display:flex;gap:4px;align-items:center}
+    .pill{padding:4px 8px;font-size:8px;border-radius:10px;background:var(--panel);border:1px solid var(--border);color:var(--dim);cursor:pointer}
+    .pill.on{background:var(--accent2);color:#000;border-color:var(--accent2)}
+    .video-section{flex-shrink:0;background:#000}
+    .video-wrap{position:relative;width:100%;padding-bottom:40%}
+    #player{position:absolute;top:0;left:0;width:100%;height:100%}
+    .now-playing{padding:10px 12px;background:var(--panel);border-bottom:1px solid var(--border)}
+    .np-row{display:flex;align-items:center;gap:8px}
+    .np-main{flex:1;min-width:0}
+    .np-artist{font-size:12px;font-weight:800;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .np-track{font-size:10px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .np-tags{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+    .tag{font-size:8px;padding:2px 6px;border-radius:8px;text-transform:uppercase}
+    .tag.cat{background:rgba(255,107,53,.2);color:var(--accent)}
+    .tag.sonic{background:rgba(0,255,136,.1);color:var(--accent2);max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tag.year{color:var(--dim);border:1px solid var(--border)}
+    .controls{display:flex;gap:6px;padding:10px 12px;background:#080808;border-bottom:1px solid var(--border)}
+    .ctrl{flex:1;padding:12px 8px;background:var(--panel);border:1px solid var(--border);border-radius:6px;color:var(--text);
+      font-family:inherit;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+    .ctrl:active{transform:scale(.95)}
+    .ctrl.primary{background:var(--accent);color:#000;border-color:var(--accent)}
+    .ctrl.on{background:var(--accent2);color:#000;border-color:var(--accent2)}
+    .cat-bar{display:flex;gap:4px;padding:8px 12px;overflow-x:auto;background:var(--panel);border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch}
+    .cat-bar::-webkit-scrollbar{display:none}
+    .cat-chip{flex-shrink:0;padding:5px 10px;font-size:9px;background:#1a1a1a;border:1px solid var(--border);border-radius:12px;color:var(--dim);cursor:pointer;letter-spacing:1px}
+    .cat-chip.active{background:var(--accent);color:#000;border-color:var(--accent)}
+    .cat-chip span{opacity:.6;margin-left:2px}
+    .track-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+    .track{display:flex;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border);gap:8px;cursor:pointer}
+    .track:active{background:rgba(255,107,53,.1)}
+    .track.playing{background:rgba(0,255,136,.08);border-left:2px solid var(--accent2)}
+    .track.search-needed{opacity:.55}
+    .track.search-needed .t-title::after{content:"  🔍";opacity:.7}
+    .t-num{width:20px;font-size:9px;color:var(--dim);text-align:center}
+    .t-info{flex:1;min-width:0}
+    .t-artist{font-size:10px;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .t-title{font-size:9px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .t-meta{font-size:8px;color:var(--dim);text-align:right}
+    .t-cat{display:block;text-transform:uppercase}
+    .footer{display:flex;justify-content:space-around;padding:8px 12px;background:#080808;border-top:1px solid var(--border);font-size:9px}
+    .stat{text-align:center}
+    .stat-val{color:var(--accent);font-weight:800}
+    .stat-lbl{color:var(--dim);font-size:7px;letter-spacing:1px}
+
+    /* mini modal */
+    .toast{
+      position:fixed;left:12px;right:12px;bottom:calc(12px + var(--safe-bottom));
+      background:rgba(17,17,17,.95);border:1px solid var(--border);border-radius:10px;
+      padding:10px 10px;display:none;gap:10px;align-items:flex-start;
+      box-shadow:0 10px 40px rgba(0,0,0,.4);
+    }
+    .toast.on{display:flex}
+    .toast .tt{font-size:10px;color:var(--text);line-height:1.3}
+    .toast .tt b{color:var(--accent)}
+    .toast .actions{display:flex;gap:6px;margin-left:auto}
+    .mini{font-size:9px;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:#0f0f0f;color:var(--text);cursor:pointer}
+    .mini.primary{background:var(--accent);color:#000;border-color:var(--accent)}
+    .mini.good{background:var(--accent2);color:#000;border-color:var(--accent2)}
+    .mini:active{transform:scale(.96)}
+  </style>
+  <base target="_blank" />
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <span class="brand">SHIPWRECKED FUTURISM CRATE 01</span>
+    <div class="mode-pills">
+      <div class="pill on" id="p-auto">AUTO</div>
+      <div class="pill" id="p-shuf">SHUF</div>
+      <div class="pill" id="p-loop">LOOP</div>
+    </div>
+  </div>
+
+  <div class="video-section">
+    <div class="video-wrap">
+      <div id="player"></div>
+    </div>
+  </div>
+
+  <div class="now-playing">
+    <div class="np-row">
+      <div class="np-main">
+        <div class="np-artist" id="np-artist">Select a track</div>
+        <div class="np-track" id="np-track">--</div>
+      </div>
+    </div>
+    <div class="np-tags">
+      <span class="tag cat" id="np-cat">--</span>
+      <span class="tag year" id="np-year">--</span>
+      <span class="tag sonic" id="np-sonic">--</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl" id="btn-prev">PREV</button>
+    <button class="ctrl primary" id="btn-next">NEXT</button>
+    <button class="ctrl" id="btn-rand">RND</button>
+    <button class="ctrl" id="btn-fix">FIX URL</button>
+  </div>
+
+  <div class="cat-bar" id="cats"></div>
+  <div class="track-list" id="list"></div>
+
+  <div class="footer">
+    <div class="stat"><span class="stat-val" id="s-total">0</span><br><span class="stat-lbl">TOTAL</span></div>
+    <div class="stat"><span class="stat-val" id="s-show">0</span><br><span class="stat-lbl">SHOWING</span></div>
+    <div class="stat"><span class="stat-val" id="s-played">0</span><br><span class="stat-lbl">PLAYED</span></div>
+    <div class="stat"><span class="stat-val" id="s-idx">0</span><br><span class="stat-lbl">INDEX</span></div>
+  </div>
+</div>
+
+<!-- quick actions toast -->
+<div class="toast" id="toast">
+  <div class="tt" id="toastText"></div>
+  <div class="actions">
+    <button class="mini" id="toastSearch">SEARCH</button>
+    <button class="mini good" id="toastPaste">PASTE</button>
+    <button class="mini" id="toastClose">CLOSE</button>
+  </div>
+</div>
+
+<script>
+  /*
+    SHIPWRECKED FUTURISM
+    = "technology arrives wet, late, and repurposed"
+    - early synths/drum machines colliding with older rhythmic logics
+    - tape weather, humid saturation, wrong voltage glamour
+    - the groove stays ritual; the timbre becomes alien
+  */
+
+  const CRATE_KEY = "SHIPWRECKED_FUTURISM_CRATE_01_URL_OVERRIDES_v1";
+
+  // NOTE:
+  // - u can be:
+  //    * a watch URL: https://www.youtube.com/watch?v=VIDEOID
+  //    * a short URL: https://youtu.be/VIDEOID
+  //    * an embed URL: https://www.youtube.com/embed/VIDEOID
+  //    * "SEARCH" (meaning: needs a real URL)
+  //
+  // You already have a real working set from Gemini — those are included as VERIFIED.
+  // Add more as you verify: use FIX URL -> paste a YouTube link -> it persists in localStorage.
+
+  const A_BASE = [
+    // =========================
+    // VERIFIED (FROM YOUR GEMINI THREAD)
+    // =========================
+    { a:"João Cirilo", t:"Space Echo: The Mystery…", c:"core_cabo_verde", y:2016, u:"https://www.youtube.com/embed/6q5cR8N4Z8A", s:"[COSMIC][LUSO][RITUAL] — shipwreck synth, trance pulse" },
+    { a:"António Sanches", t:"Pinta Manta", c:"core_cabo_verde", y:1980, u:"https://www.youtube.com/embed/pMgcKpTnfJA", s:"[COSMIC][FUNANÁ][HYPNOTIC] — relentless 12/8 engine" },
+    { a:"Dionisio Maio", t:"Dia Ja Manche", c:"core_cabo_verde", y:1980, u:"https://www.youtube.com/embed/o6FtOd3Lckg", s:"[LUSO][GROOVE][SOLAR] — bright synth + island swing" },
+    { a:"Quirino Do Canto", t:"Mino Di Mama", c:"core_cabo_verde", y:1980, u:"https://www.youtube.com/embed/kO1WCJ_XtZs", s:"[COSMIC][AFRO-SYNTH][RITUAL] — thick pads, nocturnal churn" },
+    { a:"Tchiss Lopes", t:"Mundo D'Margura", c:"core_cabo_verde", y:1980, u:"https://www.youtube.com/embed/ZBRRmtQEKkg", s:"[LUSO][PSYCH][DEEP] — guitar haze + warm circuitry" },
+    { a:"Abel Lima", t:"Corre Riba, Corre Baxo", c:"core_cabo_verde", y:1980, u:"https://www.youtube.com/embed/TX8u_nSrywc", s:"[COSMIC][AFRO-BEAT][ENERGY] — kinetic tradition, synth flare" },
+    { a:"Bitori", t:"Bitori Nha Bibinha", c:"core_cabo_verde", y:1980, u:"https://www.youtube.com/embed/s4inYSoVT04", s:"[FUNANÁ][RAW][RITUAL] — accordion sweat, ecstatic loop" },
+    { a:"José Casimiro", t:"Morti Sta Bidjàcu", c:"core_cabo_verde", y:1980, u:"https://www.youtube.com/embed/mYPSUg3QfGs", s:"[LUSO][SYNTH][COSMIC] — island disco mirage" },
+    { a:"Os Apolos", t:"Ilyne", c:"core_cabo_verde", y:1980, u:"https://www.youtube.com/embed/3FfVgHjciyU", s:"[COSMIC][TROPICAL][VIBE] — space organ + beach-night drums" },
+    { a:"Pedrinho", t:"Odji de Menina", c:"astro_atlantic", y:1980, u:"https://www.youtube.com/embed/3HrOa--Yw1o", s:"[COSMIC][SYNTH-FUNK][ETHEREAL] — luminous keys, soft propulsion" },
+    { a:"Tam Tam 2000", t:"Ti Cherie", c:"astro_atlantic", y:1980, u:"https://www.youtube.com/embed/Z-N7Wc7eq50", s:"[ZOUK][SYNTH-BASS][HYPNOTIC] — plastic bass, ritual sway" },
+    { a:"Tulipa Negra", t:"Corpo Limpo", c:"astro_atlantic", y:1980, u:"https://www.youtube.com/embed/lMwAGHn6vEM", s:"[COSMIC][DISCO][ATMOSPHERIC] — sleek floor sheen, island air" },
+    { a:"Cabo Verde Show", t:"Bem Danca", c:"astro_atlantic", y:1980, u:"https://www.youtube.com/embed/EhqPsLRJZzE", s:"[LUSO][DANCEFLOOR][80S] — community dancefloor lock" },
+    { a:"Nhú De Ped'Bia", t:"Nos Criola", c:"astro_atlantic", y:1980, u:"https://www.youtube.com/embed/GqkqRRRYZls", s:"[RAW][RITUAL][LO-FI] — tape weather + steady trance" },
+
+    // =========================
+    // EXPANSION SET (NEEDS REAL URL PASTE)
+    // (use FIX URL to paste each YouTube link; it persists)
+    // =========================
+    { a:"Charanjit Singh", t:"Raga Bhairavi (Disco Beat / TB-303 era)", c:"global_shipwreck", y:1982, u:"SEARCH", s:"[ACID][RAGA][PROTO-HOUSE] — traditional melody, machine grid" },
+    { a:"William Onyeabor", t:"Fantastic Man", c:"global_shipwreck", y:1981, u:"SEARCH", s:"[AFRO-SYNTH][DIY][HYPNOTIC] — utopian funk from a private factory" },
+    { a:"Los Mirlos", t:"La Danza del Petrolero", c:"global_shipwreck", y:1970, u:"SEARCH", s:"[CHICHA][PSYCH][SURF] — rainforest cumbia + fuzz circuitry" },
+    { a:"L'Orchestre Kanaga de Mopti", t:"Gambari", c:"global_shipwreck", y:1970, u:"SEARCH", s:"[AFRO-PSYCH][TRANCE][BRASS] — brass storm, amplifier heat" },
+
+    { a:"Hailu Mergia", t:"Yègellé Tezeta", c:"global_shipwreck", y:1970, u:"SEARCH", s:"[ETHIO-JAZZ][KEYS][DIASPORA] — melancholy keys, late-night glide" },
+    { a:"Ata Kak", t:"Obaa Sima", c:"global_shipwreck", y:1994, u:"SEARCH", s:"[HIGHLIFE][SYNTH][OUTSIDER] — joyous wrongness, cassette futurism" },
+    { a:"Mory Kanté", t:"Yéké Yéké", c:"global_shipwreck", y:1987, u:"SEARCH", s:"[AFRO-DANCE][SYNTH][GLOBAL] — balafon logic translated to pop hardware" },
+    { a:"YMO", t:"Rydeen", c:"global_shipwreck", y:1979, u:"SEARCH", s:"[TECHNO-POP][ARCADE][PRECISION] — clean circuits, ritual repetition" },
+
+    { a:"Konono Nº1", t:"Lufuala Ndonga", c:"global_shipwreck", y:2000, u:"SEARCH", s:"[CONGO][AMPLIFIED][JUNK-TECH] — homemade amps, trance metallurgy" },
+    { a:"Orchestre Poly-Rythmo", t:"Pardon", c:"global_shipwreck", y:1970, u:"SEARCH", s:"[BENIN][AFRO-FUNK][ENGINE] — dense rhythm lattice, horn heat" },
+    { a:"Nusrat Fateh Ali Khan + Party", t:"Mustt Mustt (Massive Attack Mix)", c:"global_shipwreck", y:1990, u:"SEARCH", s:"[QAWWALI][DUB][CROSSWIND] — devotion routed through bass science" },
+
+    { a:"Kanda Bongo Man", t:"Sai (Soukous)", c:"global_shipwreck", y:1980, u:"SEARCH", s:"[SOUKOUS][GUITAR][KINETIC] — high-speed joy, tape sparkle" },
+    { a:"Mulatu Astatke", t:"Yèkèrmo Sèw", c:"global_shipwreck", y:1970, u:"SEARCH", s:"[ETHIO-JAZZ][VIBES][NOIR] — smoky modal swing, future-past" },
+    { a:"Francis Bebey", t:"The Coffee Cola Song", c:"global_shipwreck", y:1980, u:"SEARCH", s:"[AFRO-ELECTRONIC][PLAYFUL][DIY] — folk logic + synth grin" },
+
+    { a:"Hosono House / Haruomi Hosono", t:"Sports Men", c:"global_shipwreck", y:1970, u:"SEARCH", s:"[JAPAN][WEIRD-POP][STUDIO] — studio as island, pop as artifact" },
+    { a:"Les Vikings", t:"C'est la vie", c:"global_shipwreck", y:1970, u:"SEARCH", s:"[GUINEE][AFRO-ROCK][ELECTRIC] — dance band modernity, humid amps" },
+    { a:"Orlando Julius", t:"Buje Buje", c:"global_shipwreck", y:1960, u:"SEARCH", s:"[NIGERIA][AFROBEAT][BRASS] — proto-funk heat, street ceremony" }
+  ];
+
+  // Apply URL overrides from localStorage so you can “fix” items once and keep working.
+  function loadOverrides(){
+    try { return JSON.parse(localStorage.getItem(CRATE_KEY) || "{}"); }
+    catch(e){ return {}; }
+  }
+  function saveOverrides(o){
+    localStorage.setItem(CRATE_KEY, JSON.stringify(o));
+  }
+  const OV = loadOverrides();
+
+  const A = A_BASE.map((x, i) => {
+    const key = `${x.a}__${x.t}`;
+    if (OV[key]) return { ...x, u: OV[key] };
+    return x;
+  });
+
+  let Q = [...A], idx = -1, played = 0, cat = "all", auto = true, shuf = false, loop = false, P = null;
+
+  // YouTube Iframe API
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);
+
+  function onYouTubeIframeAPIReady(){ /* noop; player created on first load() */ }
+
+  // Accept watch / youtu.be / shorts / embed
+  function vid(u){
+    if(!u || u==="SEARCH") return null;
+    const m = String(u).match(/(?:v=|\/shorts\/|youtu\.be\/|youtube\.com\/embed\/)([^&?\/]+)/);
+    return m ? m[1] : null;
+  }
+
+  function toast(on, html){
+    const T = document.getElementById("toast");
+    const TT = document.getElementById("toastText");
+    if(on){
+      TT.innerHTML = html;
+      T.classList.add("on");
+    } else {
+      T.classList.remove("on");
+    }
+  }
+
+  function now(){
+    if(idx < 0 || idx >= Q.length) return null;
+    return Q[idx];
+  }
+
+  function searchURL(x){
+    const q = encodeURIComponent(`${x.a} ${x.t}`);
+    return `https://www.youtube.com/results?search_query=${q}`;
+  }
+
+  function load(i){
+    if(i < 0 || i >= Q.length) return;
+    const x = Q[i];
+    const id = vid(x.u);
+
+    // If missing URL, open helper toast
+    if(!id){
+      idx = i;
+      document.getElementById("np-artist").textContent = x.a;
+      document.getElementById("np-track").textContent = x.t;
+      document.getElementById("np-cat").textContent = x.c;
+      document.getElementById("np-year").textContent = x.y || "--";
+      document.getElementById("np-sonic").textContent = x.s || "--";
+      document.getElementById("s-idx").textContent = i + 1;
+      render();
+
+      toast(true, `Needs a real YouTube link for <b>${x.a}</b> — ${x.t}<br><span style="color:var(--dim)">Tap SEARCH → pick a video → copy link → PASTE.</span>`);
+      return;
+    }
+
+    toast(false);
+
+    if(P){
+      P.loadVideoById(id);
+    } else {
+      P = new YT.Player("player", {
+        videoId: id,
+        playerVars: { autoplay: 1, controls: 1, modestbranding: 1, rel: 0 },
+        events: { onStateChange: onEnd }
+      });
+    }
+
+    idx = i;
+    document.getElementById("np-artist").textContent = x.a;
+    document.getElementById("np-track").textContent = x.t;
+    document.getElementById("np-cat").textContent = x.c;
+    document.getElementById("np-year").textContent = x.y || "--";
+    document.getElementById("np-sonic").textContent = x.s || "--";
+    document.getElementById("s-idx").textContent = i + 1;
+    render();
+  }
+
+  function onEnd(e){
+    if(e.data === 0){
+      played++;
+      document.getElementById("s-played").textContent = played;
+      if(loop){ P.seekTo(0); P.playVideo(); }
+      else if(auto) next();
+    }
+  }
+
+  function next(){
+    if(Q.length === 0) return;
+    if(shuf){
+      let ni;
+      do { ni = Math.floor(Math.random() * Q.length); } while(ni === idx && Q.length > 1);
+      idx = ni;
+    } else {
+      idx = (idx + 1) % Q.length;
+    }
+    load(idx);
+  }
+
+  function prev(){
+    if(Q.length === 0) return;
+    idx = (idx <= 0) ? (Q.length - 1) : (idx - 1);
+    load(idx);
+  }
+
+  function rand(){
+    if(Q.length === 0) return;
+    idx = Math.floor(Math.random() * Q.length);
+    load(idx);
+  }
+
+  function filter(c){
+    cat = c;
+    Q = (c === "all") ? [...A] : A.filter(x => x.c === c);
+    idx = -1;
+    document.querySelectorAll(".cat-chip").forEach(e => e.classList.toggle("active", e.dataset.c === c));
+    stats(); render();
+  }
+
+  function render(){
+    const L = document.getElementById("list");
+    L.innerHTML = Q.map((x, i) => {
+      const needsSearch = !x.u || x.u === "SEARCH" || !vid(x.u);
+      return `
+        <div class="track ${i === idx ? "playing" : ""} ${needsSearch ? "search-needed" : ""}" onclick="load(${i})">
+          <div class="t-num">${i+1}</div>
+          <div class="t-info">
+            <div class="t-artist">${escapeHtml(x.a)}</div>
+            <div class="t-title">${escapeHtml(x.t)}${needsSearch ? " (needs url)" : ""}</div>
+          </div>
+          <div class="t-meta">
+            <span class="t-cat">${escapeHtml(x.c.replace(/_/g," "))}</span>
+            ${x.y || ""}
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function cats(){
+    const c = {};
+    A.forEach(x => c[x.c] = (c[x.c] || 0) + 1);
+    document.getElementById("cats").innerHTML =
+      `<div class="cat-chip active" data-c="all" onclick="filter('all')">ALL<span>${A.length}</span></div>` +
+      Object.keys(c).sort().map(k =>
+        `<div class="cat-chip" data-c="${k}" onclick="filter('${k}')">${k.replace(/_/g," ").toUpperCase()}<span>${c[k]}</span></div>`
+      ).join("");
+  }
+
+  function stats(){
+    document.getElementById("s-total").textContent = A.length;
+    document.getElementById("s-show").textContent = Q.length;
+    document.getElementById("s-played").textContent = played;
+  }
+
+  function fixCurrent(){
+    const x = now();
+    if(!x){
+      toast(true, `Select a track first.`);
+      return;
+    }
+    toast(true, `Fix URL for <b>${escapeHtml(x.a)}</b> — ${escapeHtml(x.t)}<br><span style="color:var(--dim)">Paste any YouTube link (watch / youtu.be / embed).</span>`);
+  }
+
+  function doSearch(){
+    const x = now();
+    if(!x) return;
+    window.open(searchURL(x), "_blank");
+  }
+
+  function doPaste(){
+    const x = now();
+    if(!x) return;
+    const pasted = prompt("Paste a YouTube URL for:\n" + x.a + " — " + x.t + "\n\nExamples:\nhttps://www.youtube.com/watch?v=VIDEOID\nhttps://youtu.be/VIDEOID\nhttps://www.youtube.com/embed/VIDEOID");
+    if(!pasted) return;
+
+    const id = vid(pasted);
+    if(!id){
+      alert("Couldn't detect a YouTube video ID in that link. Try a standard watch/youtu.be/embed URL.");
+      return;
+    }
+
+    // Persist override
+    const key = `${x.a}__${x.t}`;
+    OV[key] = pasted.trim();
+    saveOverrides(OV);
+
+    // Update in-memory arrays (both Q and A)
+    for(const arr of [A, Q]){
+      for(let i=0;i<arr.length;i++){
+        if(arr[i].a === x.a && arr[i].t === x.t){
+          arr[i].u = pasted.trim();
+        }
+      }
+    }
+
+    toast(false);
+    // reload current item (same index) if possible
+    const i = idx;
+    if(i >= 0) load(i);
+    render();
+  }
+
+  // small helper: export current crate JSON (with fixed URLs) to clipboard
+  function exportJSON(){
+    const data = {
+      crate: "SHIPWRECKED FUTURISM CRATE 01",
+      generated: new Date().toISOString(),
+      tracks: A
+    };
+    const txt = JSON.stringify(data, null, 2);
+    navigator.clipboard?.writeText(txt).then(() => {
+      alert("Crate JSON copied to clipboard.");
+    }).catch(() => {
+      prompt("Copy this JSON:", txt);
+    });
+  }
+
+  function escapeHtml(str){
+    return String(str ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  // bindings
+  document.getElementById("btn-next").onclick = next;
+  document.getElementById("btn-prev").onclick = prev;
+  document.getElementById("btn-rand").onclick = rand;
+  document.getElementById("btn-fix").onclick = fixCurrent;
+
+  document.getElementById("p-auto").onclick = function(){ auto = !auto; this.classList.toggle("on", auto); };
+  document.getElementById("p-shuf").onclick = function(){ shuf = !shuf; this.classList.toggle("on", shuf); };
+  document.getElementById("p-loop").onclick = function(){ loop = !loop; this.classList.toggle("on", loop); };
+
+  // toast buttons
+  document.getElementById("toastClose").onclick = () => toast(false);
+  document.getElementById("toastSearch").onclick = doSearch;
+  document.getElementById("toastPaste").onclick = doPaste;
+
+  // long-press anywhere in footer to export JSON
+  let lpTimer=null;
+  document.querySelector(".footer").addEventListener("touchstart", () => {
+    lpTimer = setTimeout(exportJSON, 600);
+  });
+  document.querySelector(".footer").addEventListener("touchend", () => {
+    if(lpTimer) clearTimeout(lpTimer);
+    lpTimer=null;
+  });
+
+  cats(); render(); stats();
+</script>
+</body>
+</html>
