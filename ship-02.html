@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>SHIPWRECKED FUTURISM CRATE 01</title>
+  <style>
+    :root{
+      --bg:#0a0a0a;
+      --panel:#111;
+      --border:#222;
+      --accent:#7cff6b;      /* new: phosphor */
+      --accent2:#ff6b35;     /* new: ember */
+      --text:#e8e8e8;
+      --dim:#666;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{
+      height:100%; overflow:hidden; background:var(--bg); color:var(--text);
+      font-family:'SF Mono','Monaco',monospace;
+      touch-action:manipulation; -webkit-user-select:none; user-select:none;
+    }
+    .app{
+      height:100%; display:flex; flex-direction:column;
+      padding-top:var(--safe-top); padding-bottom:var(--safe-bottom);
+    }
+    .header{
+      display:flex; justify-content:space-between; align-items:center;
+      padding:8px 12px; border-bottom:1px solid var(--border);
+      background:#080808;
+    }
+    .brand{
+      font-size:11px; font-weight:bold; color:var(--accent);
+      letter-spacing:2px; text-transform:uppercase;
+    }
+    .mode-pills{display:flex; gap:4px;}
+    .pill{
+      padding:4px 8px; font-size:8px; border-radius:10px;
+      background:var(--panel); border:1px solid var(--border);
+      color:var(--dim); cursor:pointer;
+    }
+    .pill.on{background:var(--accent2); color:#000; border-color:var(--accent2);}
+    .video-section{flex-shrink:0; background:#000;}
+    .video-wrap{position:relative; width:100%; padding-bottom:40%;}
+    .video-wrap iframe{position:absolute; inset:0; width:100%; height:100%; border:none;}
+    .now-playing{
+      padding:10px 12px; background:var(--panel);
+      border-bottom:1px solid var(--border);
+    }
+    .np-row{display:flex; align-items:center; gap:8px;}
+    .np-main{flex:1; min-width:0;}
+    .np-artist{
+      font-size:12px; font-weight:bold; color:var(--accent2);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .np-track{
+      font-size:10px; color:var(--text);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .np-tags{display:flex; gap:6px; margin-top:4px; flex-wrap:wrap;}
+    .tag{font-size:8px; padding:2px 6px; border-radius:8px; text-transform:uppercase;}
+    .tag.cat{background:rgba(124,255,107,.15); color:var(--accent);}
+    .tag.sonic{
+      background:rgba(255,107,53,.10); color:var(--accent2);
+      max-width:260px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .tag.year{color:var(--dim); border:1px solid var(--border);}
+    .controls{
+      display:flex; gap:6px; padding:10px 12px;
+      background:#080808; border-bottom:1px solid var(--border);
+    }
+    .ctrl{
+      flex:1; padding:12px 8px; background:var(--panel);
+      border:1px solid var(--border); border-radius:6px;
+      color:var(--text); font-family:inherit; font-size:10px; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:4px;
+    }
+    .ctrl:active{transform:scale(.95);}
+    .ctrl.primary{background:var(--accent2); color:#000; border-color:var(--accent2);}
+    .ctrl.on{background:var(--accent); color:#000; border-color:var(--accent);}
+    .cat-bar{
+      display:flex; gap:4px; padding:8px 12px; overflow-x:auto;
+      background:var(--panel); border-bottom:1px solid var(--border);
+      -webkit-overflow-scrolling:touch;
+    }
+    .cat-bar::-webkit-scrollbar{display:none;}
+    .cat-chip{
+      flex-shrink:0; padding:5px 10px; font-size:9px;
+      background:#1a1a1a; border:1px solid var(--border);
+      border-radius:12px; color:var(--dim); cursor:pointer; letter-spacing:1px;
+    }
+    .cat-chip.active{background:var(--accent2); color:#000; border-color:var(--accent2);}
+    .cat-chip span{opacity:.6; margin-left:2px;}
+    .track-list{flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch;}
+    .track{
+      display:flex; align-items:center; padding:8px 12px;
+      border-bottom:1px solid var(--border); gap:8px; cursor:pointer;
+    }
+    .track:active{background:rgba(255,107,53,.08);}
+    .track.playing{background:rgba(124,255,107,.08); border-left:2px solid var(--accent);}
+    .track.search-needed{opacity:.5;}
+    .track.search-needed .t-title::after{content:" 🔍"; opacity:.6;}
+    .t-num{width:20px; font-size:9px; color:var(--dim); text-align:center;}
+    .t-info{flex:1; min-width:0;}
+    .t-artist{font-size:10px; color:var(--accent2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .t-title{font-size:9px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .t-meta{font-size:8px; color:var(--dim); text-align:right;}
+    .t-cat{display:block; text-transform:uppercase;}
+    .footer{
+      display:flex; justify-content:space-around; padding:8px 12px;
+      background:#080808; border-top:1px solid var(--border); font-size:9px;
+    }
+    .stat{text-align:center;}
+    .stat-val{color:var(--accent2); font-weight:bold;}
+    .stat-lbl{color:var(--dim); font-size:7px; letter-spacing:1px;}
+  </style>
+  <base target="_blank">
+</head>
+
+<body>
+  <div class="app">
+    <div class="header">
+      <span class="brand">SHIPWRECKED FUTURISM CRATE 01</span>
+      <div class="mode-pills">
+        <div class="pill on" id="p-auto">AUTO</div>
+        <div class="pill" id="p-shuf">SHUF</div>
+        <div class="pill" id="p-loop">LOOP</div>
+      </div>
+    </div>
+
+    <div class="video-section">
+      <div class="video-wrap"><div id="player"></div></div>
+    </div>
+
+    <div class="now-playing">
+      <div class="np-row">
+        <div class="np-main">
+          <div class="np-artist" id="np-artist">Select a track</div>
+          <div class="np-track" id="np-track">--</div>
+        </div>
+      </div>
+      <div class="np-tags">
+        <span class="tag cat" id="np-cat">--</span>
+        <span class="tag year" id="np-year">--</span>
+        <span class="tag sonic" id="np-sonic">--</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="ctrl" id="btn-prev">PREV</button>
+      <button class="ctrl primary" id="btn-next">NEXT</button>
+      <button class="ctrl" id="btn-rand">RND</button>
+    </div>
+
+    <div class="cat-bar" id="cats"></div>
+    <div class="track-list" id="list"></div>
+
+    <div class="footer">
+      <div class="stat"><span class="stat-val" id="s-total">0</span><br><span class="stat-lbl">TOTAL</span></div>
+      <div class="stat"><span class="stat-val" id="s-show">0</span><br><span class="stat-lbl">SHOWING</span></div>
+      <div class="stat"><span class="stat-val" id="s-played">0</span><br><span class="stat-lbl">PLAYED</span></div>
+      <div class="stat"><span class="stat-val" id="s-idx">0</span><br><span class="stat-lbl">INDEX</span></div>
+    </div>
+  </div>
+
+  <script>
+    // NOTE: u can be watch URLs or youtu.be URLs — we extract the videoId.
+    // If you prefer embed URLs, it still works (we extract the id from /embed/ too).
+
+    const A = [
+      // =========================
+      // TEST (player sanity check)
+      // =========================
+      { a:"TEST: James Brown", t:"Funky Drummer (sanity)", c:"test", y:1970, u:"https://www.youtube.com/watch?v=AoQ4AtsFWVM", s:"[TEST] if this plays, the player pipeline is fine." },
+
+      // =========================
+      // EUROPE: MECHANICAL / NOISE ORIGINS
+      // =========================
+      { a:"Pierre Jaquet-Droz", t:"The Writer / Automata (mechanical musician lineage)", c:"europe_proto", y:1770, u:"https://www.youtube.com/watch?v=wHQsO_OVb_U", s:"[MECHANICAL][AUTOMATA][PROTO-ROBOT] clockwork ritual pretending to be alive." },
+      { a:"Luigi Russolo", t:"Corale & Serenata (Futurist noise)", c:"europe_noise", y:1913, u:"https://www.youtube.com/watch?v=VpXNfR_zV_U", s:"[FUTURISM][NOISE][INTONARUMORI] composition shipwrecked into machine-sound." },
+
+      // =========================
+      // USA: MID-CENTURY ELECTRONIC WEIRDNESS
+      // =========================
+      { a:"Raymond Scott", t:"The Rhythm Modulator", c:"usa_lab", y:1950, u:"https://www.youtube.com/watch?v=5A052VLTZ_I", s:"[LAB][PROTO-GEN][ELECTRONIC] ad-man electronics as premature software." },
+
+      // =========================
+      // FRANCE: SPACE-LOUNGE ARCHAEOLOGY
+      // =========================
+      { a:"Bernard Fevre", t:"The Strange World of Bernard Fevre", c:"france_cosmic", y:1970, u:"https://www.youtube.com/watch?v=OhKdWZjjQKQ", s:"[SPACE-LOUNGE][ARCHEO][SYNTH] sci-fi thrift-store aura." },
+
+      // =========================
+      // CABO VERDE: SPACE ECHO CORE
+      // =========================
+      { a:"João Cirilo", t:"Po D'Terra", c:"cabo_verde_core", y:1980, u:"https://www.youtube.com/watch?v=6q5cR8N4Z8A", s:"[COSMIC][LUSO][RITUAL] funaná pulse + warm synth drift." },
+
+      // =========================
+      // PERU: AMAZON FUTURISM (CHICHA)
+      // =========================
+      { a:"Los Mirlos", t:"Sonido Amazónico", c:"peru_chicha", y:1973, u:"https://www.youtube.com/watch?v=X8Aw8LPU0qE", s:"[AMAZON][FUZZ][TRANCE] rainforest guitar through amp-weather." },
+
+      // =========================
+      // THAILAND: MOLAM / PSYCH COLLISION
+      // =========================
+      { a:"The Sound of Siam", t:"Lam Toey", c:"thailand_molam", y:1970, u:"https://www.youtube.com/watch?v=UQK47ZegCXU", s:"[MOLAM][PSYCH][ORGAN] rural ritual wired into pedals." },
+
+      // =========================
+      // INDIA: TB-303 RAGA (PROTO-ACID)
+      // =========================
+      { a:"Charanjit Singh", t:"Ten Ragas to a Disco Beat (album source)", c:"india_protoacid", y:1982, u:"https://www.youtube.com/watch?v=IzPCeTg27MI", s:"[ACID][RAGA][SHIPWRECK] bass box rerouted into ancient scale-ritual." },
+
+      // =========================
+      // NIGERIA: DIY SYNTH PALACE
+      // =========================
+      { a:"William Onyeabor", t:"Fantastic Man", c:"nigeria_afrosynth", y:1979, u:"https://www.youtube.com/watch?v=Ca6w80HUy-c", s:"[AFRO-SYNTH][DIY][HYPNOTIC] utopian funk from a private circuitry kingdom." },
+
+      // =========================
+      // OPTIONAL “BUFFER” ITEMS — add your own verified IDs the same way:
+      // { a:"...", t:"...", c:"...", y:1980, u:"https://www.youtube.com/watch?v=VIDEO_ID", s:"[TAGS]" },
+    ];
+
+    let Q=[...A], idx=-1, played=0, cat='all', auto=true, shuf=false, loop=false, P=null;
+
+    const tag=document.createElement('script');
+    tag.src="https://www.youtube.com/iframe_api";
+    document.head.appendChild(tag);
+
+    function onYouTubeIframeAPIReady(){}
+
+    function vid(u){
+      if(!u || u==="SEARCH") return null;
+      // supports watch?v=, youtu.be/, shorts/, embed/
+      const m = u.match(/(?:v=|\/shorts\/|youtu\.be\/|\/embed\/)([^&?\/]+)/);
+      return m ? m[1] : null;
+    }
+
+    function load(i){
+      if(i<0 || i>=Q.length) return;
+      const x=Q[i], id=vid(x.u);
+      if(!id) return;
+
+      if(P){
+        P.loadVideoById(id);
+      }else{
+        P=new YT.Player('player',{
+          videoId:id,
+          playerVars:{ autoplay:1, controls:1, modestbranding:1, rel:0 },
+          events:{ onStateChange:onEnd }
+        });
+      }
+
+      idx=i;
+      document.getElementById('np-artist').textContent=x.a;
+      document.getElementById('np-track').textContent=x.t;
+      document.getElementById('np-cat').textContent=x.c;
+      document.getElementById('np-year').textContent=x.y;
+      document.getElementById('np-sonic').textContent=x.s;
+      document.getElementById('s-idx').textContent=i+1;
+      render();
+    }
+
+    function onEnd(e){
+      if(e.data===0){
+        played++;
+        document.getElementById('s-played').textContent=played;
+        if(loop){ P.seekTo(0); P.playVideo(); }
+        else if(auto) next();
+      }
+    }
+
+    function next(){
+      if(shuf){
+        let ni;
+        do{ ni=Math.floor(Math.random()*Q.length); }while(ni===idx && Q.length>1);
+        idx=ni;
+      }else{
+        idx=(idx+1)%Q.length;
+      }
+      load(idx);
+    }
+
+    function prev(){
+      idx = idx<=0 ? Q.length-1 : idx-1;
+      load(idx);
+    }
+
+    function rand(){
+      idx=Math.floor(Math.random()*Q.length);
+      load(idx);
+    }
+
+    function filter(c){
+      cat=c;
+      Q = (c==='all') ? [...A] : A.filter(x=>x.c===c);
+      idx=-1;
+      document.querySelectorAll('.cat-chip').forEach(e=>e.classList.toggle('active', e.dataset.c===c));
+      stats(); render();
+    }
+
+    function render(){
+      document.getElementById('list').innerHTML = Q.map((x,i)=>{
+        const needsSearch=!x.u || x.u==="SEARCH";
+        return `
+          <div class="track ${i===idx?'playing':''} ${needsSearch?'search-needed':''}" onclick="load(${i})">
+            <div class="t-num">${i+1}</div>
+            <div class="t-info">
+              <div class="t-artist">${x.a}</div>
+              <div class="t-title">${x.t}${needsSearch?' (search)':''}</div>
+            </div>
+            <div class="t-meta">
+              <span class="t-cat">${x.c}</span>
+              ${x.y}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function cats(){
+      const c={}; A.forEach(x=>c[x.c]=(c[x.c]||0)+1);
+      document.getElementById('cats').innerHTML =
+        `<div class="cat-chip active" data-c="all" onclick="filter('all')">ALL<span>${A.length}</span></div>` +
+        Object.keys(c).map(k =>
+          `<div class="cat-chip" data-c="${k}" onclick="filter('${k}')">${k.replace(/_/g,' ').toUpperCase()}<span>${c[k]}</span></div>`
+        ).join('');
+    }
+
+    function stats(){
+      document.getElementById('s-total').textContent=A.length;
+      document.getElementById('s-show').textContent=Q.length;
+    }
+
+    document.getElementById('btn-next').onclick=next;
+    document.getElementById('btn-prev').onclick=prev;
+    document.getElementById('btn-rand').onclick=rand;
+    document.getElementById('p-auto').onclick=function(){ auto=!auto; this.classList.toggle('on',auto); };
+    document.getElementById('p-shuf').onclick=function(){ shuf=!shuf; this.classList.toggle('on',shuf); };
+    document.getElementById('p-loop').onclick=function(){ loop=!loop; this.classList.toggle('on',loop); };
+
+    cats(); render(); stats();
+  </script>
+</body>
+</html>
