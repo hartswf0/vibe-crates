@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#07080b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>PO D'TERRA CRATE 50</title>
+
+  <style>
+    :root{
+      --bg:#07080b;
+      --panel:#0e1016;
+      --panel2:#0b0c10;
+      --border:#1e2230;
+      --text:#e8e8e8;
+      --dim:#7a7f90;
+      --hot:#ff7a18;
+      --mint:#27ffb0;
+      --vio:#7c5cff;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{
+      height:100%;
+      overflow:hidden;
+      background:var(--bg);
+      color:var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      touch-action: manipulation;
+      -webkit-user-select:none; user-select:none;
+    }
+
+    .app{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      padding-top:var(--safe-top);
+      padding-bottom:var(--safe-bottom);
+    }
+
+    .header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 12px;
+      background:linear-gradient(180deg, #07080b, #090b10);
+      border-bottom:1px solid var(--border);
+      gap:10px;
+    }
+
+    .brandwrap{display:flex;flex-direction:column;gap:2px;min-width:0}
+    .brand{
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:2px;
+      color:var(--hot);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .subbrand{
+      font-size:8px;
+      letter-spacing:1.2px;
+      color:var(--dim);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .mode-pills{display:flex;gap:6px;flex-shrink:0}
+    .pill{
+      padding:5px 9px;
+      font-size:8px;
+      border-radius:999px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      color:var(--dim);
+      cursor:pointer;
+    }
+    .pill.on{
+      background:rgba(39,255,176,0.14);
+      color:var(--mint);
+      border-color:rgba(39,255,176,0.35);
+    }
+
+    .video-section{flex-shrink:0;background:#000}
+    .video-wrap{position:relative;width:100%;padding-bottom:42%}
+    #player, .video-wrap iframe{
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      border:none;
+      background:#000;
+    }
+
+    .now-playing{
+      padding:10px 12px;
+      background:var(--panel);
+      border-bottom:1px solid var(--border);
+    }
+    .np-top{display:flex;align-items:flex-start;gap:10px}
+    .np-main{flex:1;min-width:0}
+    .np-artist{
+      font-size:12px;
+      font-weight:900;
+      color:var(--hot);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .np-track{
+      font-size:10px;
+      color:var(--text);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      margin-top:2px;
+    }
+    .np-mini{
+      font-size:8px;
+      color:var(--dim);
+      margin-top:5px;
+      letter-spacing:0.6px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+
+    .np-tags{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+    .tag{
+      font-size:8px;
+      padding:2px 7px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      color:var(--dim);
+      max-width: 72vw;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .tag.cat{
+      border-color:rgba(255,122,24,0.35);
+      color:var(--hot);
+      background:rgba(255,122,24,0.08);
+      text-transform:uppercase;
+      letter-spacing:0.9px;
+    }
+    .tag.year{
+      border-color:rgba(124,92,255,0.35);
+      color:var(--vio);
+      background:rgba(124,92,255,0.08);
+    }
+    .tag.sonic{
+      border-color:rgba(39,255,176,0.25);
+      color:var(--mint);
+      background:rgba(39,255,176,0.06);
+    }
+
+    .controls{
+      display:flex;
+      gap:8px;
+      padding:10px 12px;
+      background:var(--panel2);
+      border-bottom:1px solid var(--border);
+    }
+    .ctrl{
+      flex:1;
+      padding:12px 8px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:8px;
+      color:var(--text);
+      font:inherit;
+      font-size:10px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+    }
+    .ctrl:active{transform:scale(0.97)}
+    .ctrl.primary{
+      background:linear-gradient(180deg, rgba(255,122,24,1), rgba(255,122,24,0.82));
+      color:#000;
+      border-color:rgba(255,122,24,0.75);
+      font-weight:900;
+    }
+    .ctrl.on{
+      background:rgba(39,255,176,0.16);
+      color:var(--mint);
+      border-color:rgba(39,255,176,0.35);
+    }
+
+    .cat-bar{
+      display:flex;
+      gap:6px;
+      padding:8px 12px;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      background:var(--panel);
+      border-bottom:1px solid var(--border);
+    }
+    .cat-bar::-webkit-scrollbar{display:none}
+    .cat-chip{
+      flex-shrink:0;
+      padding:6px 10px;
+      font-size:9px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#121522;
+      color:var(--dim);
+      cursor:pointer;
+      letter-spacing:1px;
+      text-transform:uppercase;
+    }
+    .cat-chip.active{
+      background:rgba(255,122,24,0.18);
+      border-color:rgba(255,122,24,0.45);
+      color:var(--hot);
+    }
+    .cat-chip span{opacity:0.7;margin-left:4px}
+
+    .track-list{
+      flex:1;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+      background:linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.35));
+    }
+
+    .track{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding:9px 12px;
+      border-bottom:1px solid var(--border);
+      cursor:pointer;
+    }
+    .track:active{background:rgba(255,122,24,0.08)}
+    .track.playing{
+      background:rgba(39,255,176,0.07);
+      border-left:2px solid rgba(39,255,176,0.75);
+    }
+    .track.search-needed{opacity:0.6}
+    .t-num{width:22px;text-align:center;color:var(--dim);font-size:9px}
+    .t-info{flex:1;min-width:0}
+    .t-artist{
+      font-size:10px;
+      color:var(--hot);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .t-title{
+      font-size:9px;
+      color:var(--text);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      margin-top:2px;
+    }
+    .t-meta{
+      text-align:right;
+      font-size:8px;
+      color:var(--dim);
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:2px;
+      min-width:70px;
+    }
+    .t-cat{opacity:0.8;text-transform:uppercase;letter-spacing:0.8px}
+    .t-actions{
+      display:flex; gap:6px; align-items:center;
+    }
+    .tinybtn{
+      font-size:8px;
+      padding:6px 8px;
+      border-radius:8px;
+      border:1px solid var(--border);
+      background:#101422;
+      color:var(--dim);
+      cursor:pointer;
+    }
+    .tinybtn:active{transform:scale(0.97)}
+    .tinybtn.hot{
+      color:var(--hot);
+      border-color:rgba(255,122,24,0.35);
+      background:rgba(255,122,24,0.07);
+    }
+
+    .footer{
+      display:flex;
+      justify-content:space-around;
+      padding:9px 12px;
+      background:var(--panel2);
+      border-top:1px solid var(--border);
+      font-size:9px;
+    }
+    .stat{text-align:center}
+    .stat-val{color:var(--hot);font-weight:900}
+    .stat-lbl{color:var(--dim);font-size:7px;letter-spacing:1px}
+  </style>
+
+  <base target="_blank">
+</head>
+
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="brandwrap">
+        <div class="brand">PO D'TERRA CRATE 50</div>
+        <div class="subbrand">cosmic lusophone / dub-space / library ritual / astral jazz</div>
+      </div>
+      <div class="mode-pills">
+        <div class="pill on" id="p-auto">AUTO</div>
+        <div class="pill" id="p-shuf">SHUF</div>
+        <div class="pill" id="p-loop">LOOP</div>
+      </div>
+    </div>
+
+    <div class="video-section">
+      <div class="video-wrap">
+        <div id="player"></div>
+      </div>
+    </div>
+
+    <div class="now-playing">
+      <div class="np-top">
+        <div class="np-main">
+          <div class="np-artist" id="np-artist">Select a track</div>
+          <div class="np-track" id="np-track">—</div>
+          <div class="np-mini" id="np-link">tap “FIND” on a row if a link is missing</div>
+        </div>
+      </div>
+      <div class="np-tags">
+        <span class="tag cat" id="np-cat">—</span>
+        <span class="tag year" id="np-year">—</span>
+        <span class="tag sonic" id="np-sonic">—</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="ctrl" id="btn-prev">⟵ PREV</button>
+      <button class="ctrl primary" id="btn-next">NEXT ⟶</button>
+      <button class="ctrl" id="btn-rand">RND ✶</button>
+      <button class="ctrl" id="btn-open">OPEN ↗</button>
+    </div>
+
+    <div class="cat-bar" id="cats"></div>
+    <div class="track-list" id="list"></div>
+
+    <div class="footer">
+      <div class="stat"><span class="stat-val" id="s-total">0</span><br><span class="stat-lbl">TOTAL</span></div>
+      <div class="stat"><span class="stat-val" id="s-show">0</span><br><span class="stat-lbl">SHOWING</span></div>
+      <div class="stat"><span class="stat-val" id="s-played">0</span><br><span class="stat-lbl">PLAYED</span></div>
+      <div class="stat"><span class="stat-val" id="s-idx">0</span><br><span class="stat-lbl">INDEX</span></div>
+    </div>
+  </div>
+
+  <script>
+    // =========================
+    // PO D'TERRA CRATE 50 (v1)
+    // - If u is "SEARCH", row shows FIND button (opens YouTube results)
+    // - Paste in proper URLs later, this app will keep working.
+    // =========================
+    const A = [
+      // --- VERIFIED SANITY CHECK ---
+      { a:"TEST: Sun Ra", t:"Nuclear War", c:"astral_jazz", y:1979, u:"https://www.youtube.com/watch?v=lsPrINajncU", s:"[CHANT][COSMIC] — ritual broadcast", q:"https://www.youtube.com/results?search_query=Sun+Ra+Nuclear+War" },
+
+      // --- CORE GRAVITY: LUSO / BRAZIL COSMIC ---
+      { a:"João Cirilo", t:"Space Echo: The Mystery…", c:"luso_cosmic", y:2016, u:"SEARCH", s:"[LUSO][COSMIC] — space-folk apparition", q:"https://www.youtube.com/results?search_query=Jo%C3%A3o+Cirilo+Space+Echo+The+Mystery" },
+      { a:"Egberto Gismonti", t:"Dança das Cabeças", c:"luso_cosmic", y:1977, u:"SEARCH", s:"[BRAZIL][ODD] — acoustic labyrinth / trance logic", q:"https://www.youtube.com/results?search_query=Egberto+Gismonti+Dan%C3%A7a+das+Cabe%C3%A7as" },
+      { a:"Hermeto Pascoal", t:"Música da Lagoa", c:"luso_cosmic", y:1984, u:"SEARCH", s:"[FIELD][RITUAL] — nature as instrument", q:"https://www.youtube.com/results?search_query=Hermeto+Pascoal+M%C3%BAsica+da+Lagoa" },
+      { a:"Milton Nascimento", t:"Tudo Que Você Podia Ser", c:"luso_cosmic", y:1972, u:"SEARCH", s:"[BMG][FLOAT] — dawn-soft but huge", q:"https://www.youtube.com/results?search_query=Milton+Nascimento+Tudo+Que+Voc%C3%AA+Podia+Ser" },
+      { a:"Baden Powell", t:"Canto de Ossanha", c:"luso_cosmic", y:1966, u:"SEARCH", s:"[RITUAL][STRING] — Afro-Brazil invocation", q:"https://www.youtube.com/results?search_query=Baden+Powell+Canto+de+Ossanha" },
+
+      // --- TROPICALIA / MUTANT MPB ---
+      { a:"Os Mutantes", t:"Ando Meio Desligado", c:"tropical_mutant", y:1970, u:"SEARCH", s:"[PSYCH][POP] — mutant sunshine", q:"https://www.youtube.com/results?search_query=Os+Mutantes+Ando+Meio+Desligado" },
+      { a:"Caetano Veloso", t:"Tropicália", c:"tropical_mutant", y:1968, u:"SEARCH", s:"[ODD][ICON] — manifesto as groove", q:"https://www.youtube.com/results?search_query=Caetano+Veloso+Tropic%C3%A1lia" },
+      { a:"Gal Costa", t:"Vapor Barato", c:"tropical_mutant", y:1971, u:"SEARCH", s:"[VOX][DRAMA] — smoky psychic anthem", q:"https://www.youtube.com/results?search_query=Gal+Costa+Vapor+Barato" },
+      { a:"Tom Zé", t:"Augusta, Angélica e Consolação", c:"tropical_mutant", y:1973, u:"SEARCH", s:"[ODD][CITY] — street-sci groove", q:"https://www.youtube.com/results?search_query=Tom+Z%C3%A9+Augusta+Ang%C3%A9lica+e+Consola%C3%A7%C3%A3o" },
+      { a:"Jorge Ben", t:"Ponta de Lança Africano (Umbabarauma)", c:"tropical_mutant", y:1976, u:"SEARCH", s:"[FUNK][BRAZIL] — forward-run myth", q:"https://www.youtube.com/results?search_query=Jorge+Ben+Umbabarauma" },
+      { a:"Secos & Molhados", t:"Sangue Latino", c:"tropical_mutant", y:1973, u:"SEARCH", s:"[GLAM][ODD] — theatrical heat", q:"https://www.youtube.com/results?search_query=Secos+%26+Molhados+Sangue+Latino" },
+
+      // --- SPACE-DUB / FOG TECH ---
+      { a:"Rhythm & Sound", t:"King in My Empire", c:"dub_space", y:1998, u:"SEARCH", s:"[DUB][MIN] — sub meditation", q:"https://www.youtube.com/results?search_query=Rhythm+%26+Sound+King+in+My+Empire" },
+      { a:"Basic Channel", t:"Quadrant Dub", c:"dub_space", y:1994, u:"SEARCH", s:"[DUB][FOG] — techno as weather", q:"https://www.youtube.com/results?search_query=Basic+Channel+Quadrant+Dub" },
+      { a:"Pole", t:"Taxi", c:"dub_space", y:1998, u:"SEARCH", s:"[CLICK][BASS] — cracked minimal dub", q:"https://www.youtube.com/results?search_query=Pole+Taxi" },
+      { a:"Fluxion", t:"Vibrant Forms II", c:"dub_space", y:2008, u:"SEARCH", s:"[DUB][DEEP] — slow submarine motion", q:"https://www.youtube.com/results?search_query=Fluxion+Vibrant+Forms+II" },
+      { a:"DeepChord", t:"Electromagnetic Dowsing", c:"dub_space", y:2011, u:"SEARCH", s:"[DUB][DRIFT] — signal archaeology", q:"https://www.youtube.com/results?search_query=DeepChord+Electromagnetic+Dowsing" },
+      { a:"The Bug", t:"Skeng", c:"dub_space", y:2008, u:"SEARCH", s:"[BASS][BRUTAL] — pressure system", q:"https://www.youtube.com/results?search_query=The+Bug+Skeng" },
+      { a:"King Midas Sound", t:"Cool Out", c:"dub_space", y:2009, u:"SEARCH", s:"[VOX][DUB] — narcotic slow-step", q:"https://www.youtube.com/results?search_query=King+Midas+Sound+Cool+Out" },
+
+      // --- LIBRARY / COSMIC EXOTICA ---
+      { a:"Bernard Fèvre", t:"Cosmic Cycles", c:"library_cosmic", y:1977, u:"SEARCH", s:"[LIBRARY][ANALOG] — synth constellation", q:"https://www.youtube.com/results?search_query=Bernard+F%C3%A8vre+Cosmic+Cycles" },
+      { a:"Mort Garson", t:"Plantasia (Theme)", c:"library_cosmic", y:1976, u:"SEARCH", s:"[SYNTH][WARM] — botanical space", q:"https://www.youtube.com/results?search_query=Mort+Garson+Plantasia" },
+      { a:"Iasos", t:"Inter-Dimensional Music", c:"library_cosmic", y:1975, u:"SEARCH", s:"[NEW_AGE][COSMIC] — soft portal", q:"https://www.youtube.com/results?search_query=Iasos+Inter-Dimensional+Music" },
+      { a:"The Heliocentrics", t:"Distant Star", c:"library_cosmic", y:2007, u:"SEARCH", s:"[LIBRARY][JAZZ] — sci-fi grooveboard", q:"https://www.youtube.com/results?search_query=The+Heliocentrics+Distant+Star" },
+
+      // --- ASTRAL JAZZ / SPIRITUAL ENGINE ---
+      { a:"Pharoah Sanders", t:"Astral Traveling", c:"astral_jazz", y:1971, u:"SEARCH", s:"[SPIRITUAL][FLOAT] — forward into light", q:"https://www.youtube.com/results?search_query=Pharoah+Sanders+Astral+Traveling" },
+      { a:"Don Cherry", t:"Brown Rice", c:"astral_jazz", y:1975, u:"SEARCH", s:"[GLOBAL][TRANCE] — world-mandala funk", q:"https://www.youtube.com/results?search_query=Don+Cherry+Brown+Rice" },
+      { a:"Alice Coltrane", t:"Journey in Satchidananda", c:"astral_jazz", y:1971, u:"SEARCH", s:"[HARP][RITUAL] — river-temple glide", q:"https://www.youtube.com/results?search_query=Alice+Coltrane+Journey+in+Satchidananda" },
+      { a:"Lonnie Liston Smith", t:"Expansions", c:"astral_jazz", y:1974, u:"SEARCH", s:"[COSMIC][FUNK] — starship soul", q:"https://www.youtube.com/results?search_query=Lonnie+Liston+Smith+Expansions" },
+      { a:"Herbie Hancock", t:"Spider", c:"astral_jazz", y:1976, u:"SEARCH", s:"[COSMIC][FUNK] — circuitry groove", q:"https://www.youtube.com/results?search_query=Herbie+Hancock+Spider" },
+      { a:"Miles Davis", t:"Rated X", c:"astral_jazz", y:1974, u:"SEARCH", s:"[ELECTRIC][ODD] — paranoid funk machine", q:"https://www.youtube.com/results?search_query=Miles+Davis+Rated+X" },
+
+      // --- MODERN RITUAL AMBIENT ---
+      { a:"Visible Cloaks", t:"Reassemblage", c:"ritual_ambient", y:2017, u:"SEARCH", s:"[AMBIENT][GLOBAL] — soft ritual geometry", q:"https://www.youtube.com/results?search_query=Visible+Cloaks+Reassemblage" },
+      { a:"Aïsha Devi", t:"Mazdâ", c:"ritual_ambient", y:2015, u:"SEARCH", s:"[MANTRA][TECH] — voice as sigil", q:"https://www.youtube.com/results?search_query=A%C3%AFsha+Devi+Mazd%C3%A2" },
+      { a:"Coil", t:"Dark River", c:"ritual_ambient", y:1999, u:"SEARCH", s:"[OCCULT][DRONE] — dusk spell", q:"https://www.youtube.com/results?search_query=Coil+Dark+River" },
+      { a:"Holly Herndon", t:"Morning Sun", c:"ritual_ambient", y:2019, u:"SEARCH", s:"[CHOIR][ODD] — bright unease", q:"https://www.youtube.com/results?search_query=Holly+Herndon+Morning+Sun" },
+
+      // --- LUSO DIASPORA / ATLANTIC DRIFT ---
+      { a:"Cesária Évora", t:"Sodade", c:"atlantic_drift", y:1992, u:"SEARCH", s:"[MORNA][SALT] — ocean memory", q:"https://www.youtube.com/results?search_query=Ces%C3%A1ria+%C3%89vora+Sodade" },
+      { a:"Bonga", t:"Mona Ki Ngi Xica", c:"atlantic_drift", y:1972, u:"SEARCH", s:"[ANGOLA][GROOVE] — warm exile funk", q:"https://www.youtube.com/results?search_query=Bonga+Mona+Ki+Ngi+Xica" },
+      { a:"Tinariwen", t:"Sastanàqqàm", c:"atlantic_drift", y:2007, u:"SEARCH", s:"[DESERT][TRANCE] — dune engine", q:"https://www.youtube.com/results?search_query=Tinariwen+Sastan%C3%A0qq%C3%A0m" },
+
+      // --- CLUB SHADOWS (BRIDGE) ---
+      { a:"Burial", t:"Rival Dealer", c:"club_shadows", y:2013, u:"SEARCH", s:"[RAIN][UPLIFT] — nocturnal mercy", q:"https://www.youtube.com/results?search_query=Burial+Rival+Dealer" },
+      { a:"Actress", t:"Hubble", c:"club_shadows", y:2014, u:"SEARCH", s:"[SMEAR][POETRY] — techno fog poem", q:"https://www.youtube.com/results?search_query=Actress+Hubble" },
+      { a:"Skee Mask", t:"Flyby VFR", c:"club_shadows", y:2018, u:"SEARCH", s:"[AEROSPACE][BRK] — breakbeat altitude", q:"https://www.youtube.com/results?search_query=Skee+Mask+Flyby+VFR" }
+    ];
+
+    let Q = [...A], idx = -1, played = 0, cat = 'all', auto = true, shuf = false, loop = false, P = null;
+
+    // YouTube Iframe API
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(tag);
+    function onYouTubeIframeAPIReady(){ /* called by API */ }
+
+    function vid(u){
+      if(!u || u === "SEARCH") return null;
+      const m = u.match(/(?:v=|\/shorts\/|youtu\.be\/|\/embed\/)([^&?\/]+)/);
+      return m ? m[1] : null;
+    }
+
+    function openSearch(i){
+      const x = Q[i];
+      const url = (x.q || `https://www.youtube.com/results?search_query=${encodeURIComponent(x.a + " " + x.t)}`);
+      window.open(url, "_blank");
+    }
+
+    function openCurrent(){
+      if(idx < 0 || idx >= Q.length) return;
+      const x = Q[idx];
+      const url = (x.u && x.u !== "SEARCH") ? x.u : (x.q || `https://www.youtube.com/results?search_query=${encodeURIComponent(x.a + " " + x.t)}`);
+      window.open(url, "_blank");
+    }
+
+    function load(i){
+      if(i < 0 || i >= Q.length) return;
+      const x = Q[i];
+      const id = vid(x.u);
+
+      // If missing URL, just open search instead of trying to play nothing.
+      if(!id){
+        idx = i;
+        setNowPlaying(x, i);
+        render();
+        openSearch(i);
+        return;
+      }
+
+      if(P){
+        P.loadVideoById(id);
+      }else{
+        P = new YT.Player('player', {
+          videoId: id,
+          playerVars: { autoplay: 1, controls: 1, modestbranding: 1, rel: 0 },
+          events: { onStateChange: onEnd }
+        });
+      }
+
+      idx = i;
+      setNowPlaying(x, i);
+      render();
+    }
+
+    function setNowPlaying(x, i){
+      document.getElementById('np-artist').textContent = x.a || "—";
+      document.getElementById('np-track').textContent = x.t || "—";
+      document.getElementById('np-cat').textContent = x.c || "—";
+      document.getElementById('np-year').textContent = (x.y ?? "—");
+      document.getElementById('np-sonic').textContent = x.s || "—";
+      document.getElementById('np-link').textContent =
+        (x.u && x.u !== "SEARCH")
+          ? x.u.replace(/^https?:\/\//,'')
+          : "No URL saved — opened search results";
+      document.getElementById('s-idx').textContent = i + 1;
+    }
+
+    function onEnd(e){
+      if(e.data === 0){
+        played++;
+        document.getElementById('s-played').textContent = played;
+        if(loop){ P.seekTo(0); P.playVideo(); }
+        else if(auto) next();
+      }
+    }
+
+    function next(){
+      if(Q.length === 0) return;
+      if(shuf){
+        let ni;
+        do { ni = Math.floor(Math.random() * Q.length); }
+        while(ni === idx && Q.length > 1);
+        idx = ni;
+      }else{
+        idx = (idx + 1) % Q.length;
+      }
+      load(idx);
+    }
+
+    function prev(){
+      if(Q.length === 0) return;
+      idx = (idx <= 0) ? (Q.length - 1) : (idx - 1);
+      load(idx);
+    }
+
+    function rand(){
+      if(Q.length === 0) return;
+      idx = Math.floor(Math.random() * Q.length);
+      load(idx);
+    }
+
+    function filter(c){
+      cat = c;
+      Q = (c === 'all') ? [...A] : A.filter(x => x.c === c);
+      idx = -1;
+      document.querySelectorAll('.cat-chip').forEach(e => e.classList.toggle('active', e.dataset.c === c));
+      stats();
+      render();
+      // wipe now-playing for clarity
+      document.getElementById('np-artist').textContent = "Select a track";
+      document.getElementById('np-track').textContent = "—";
+      document.getElementById('np-cat').textContent = "—";
+      document.getElementById('np-year').textContent = "—";
+      document.getElementById('np-sonic').textContent = "—";
+      document.getElementById('np-link').textContent = "tap “FIND” on a row if a link is missing";
+      document.getElementById('s-idx').textContent = "0";
+    }
+
+    function render(){
+      const list = document.getElementById('list');
+      list.innerHTML = Q.map((x, i) => {
+        const needsSearch = (!x.u || x.u === "SEARCH");
+        return `
+          <div class="track ${i===idx ? 'playing' : ''} ${needsSearch ? 'search-needed' : ''}">
+            <div class="t-num">${i+1}</div>
+            <div class="t-info" onclick="load(${i})">
+              <div class="t-artist">${esc(x.a)}</div>
+              <div class="t-title">${esc(x.t)}${needsSearch ? '  ·  (needs link)' : ''}</div>
+            </div>
+            <div class="t-actions">
+              ${needsSearch ? `<button class="tinybtn hot" onclick="openSearch(${i}); event.stopPropagation()">FIND</button>` : `<button class="tinybtn" onclick="window.open('${x.u}','_blank'); event.stopPropagation()">OPEN</button>`}
+            </div>
+            <div class="t-meta" onclick="load(${i})">
+              <span class="t-cat">${esc((x.c||'').replace(/_/g,' '))}</span>
+              <span>${(x.y ?? '')}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function esc(s){
+      return (s ?? "").toString()
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function cats(){
+      const counts = {};
+      A.forEach(x => counts[x.c] = (counts[x.c] || 0) + 1);
+      const keys = Object.keys(counts).sort((a,b)=>counts[b]-counts[a]);
+      document.getElementById('cats').innerHTML =
+        `<div class="cat-chip active" data-c="all" onclick="filter('all')">ALL<span>${A.length}</span></div>` +
+        keys.map(k => `<div class="cat-chip" data-c="${k}" onclick="filter('${k}')">${k.replace(/_/g,' ')}<span>${counts[k]}</span></div>`).join('');
+    }
+
+    function stats(){
+      document.getElementById('s-total').textContent = A.length;
+      document.getElementById('s-show').textContent = Q.length;
+    }
+
+    // Controls
+    document.getElementById('btn-next').onclick = next;
+    document.getElementById('btn-prev').onclick = prev;
+    document.getElementById('btn-rand').onclick = rand;
+    document.getElementById('btn-open').onclick = openCurrent;
+
+    document.getElementById('p-auto').onclick = function(){ auto = !auto; this.classList.toggle('on', auto); };
+    document.getElementById('p-shuf').onclick = function(){ shuf = !shuf; this.classList.toggle('on', shuf); };
+    document.getElementById('p-loop').onclick = function(){ loop = !loop; this.classList.toggle('on', loop); };
+
+    // Boot
+    cats(); render(); stats();
+
+    // Expose helpers for inline onclick
+    window.load = load;
+    window.openSearch = openSearch;
+  </script>
+</body>
+</html>
