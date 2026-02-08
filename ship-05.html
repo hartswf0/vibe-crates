@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>CRATE 361: CONCRETE RIDGE / ADDIS SKY</title>
+    <style>
+        :root {
+            --bg: #0d0d0d;
+            --panel: #161616;
+            --border: #2a2a2a;
+            --accent: #ff6b35; /* Clay Orange */
+            --accent2: #00ff88; /* Neon Progress */
+            --sky: #4da6ff; /* Addis Sky */
+            --text: #e8e8e8;
+            --dim: #777;
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .app {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding-top: var(--safe-top);
+            padding-bottom: var(--safe-bottom);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            background: #000;
+        }
+
+        .brand {
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--accent2);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .mode-pills {
+            display: flex;
+            gap: 4px;
+        }
+
+        .pill {
+            padding: 4px 8px;
+            font-size: 8px;
+            border-radius: 10px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            color: var(--dim);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pill.on {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        .video-section {
+            flex-shrink: 0;
+            background: #000;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .video-wrap {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .video-wrap iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .now-playing {
+            padding: 12px 14px;
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .np-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .np-main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .np-artist {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--accent);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .np-track {
+            font-size: 11px;
+            color: var(--text);
+            margin-top: 2px;
+            opacity: 0.9;
+        }
+
+        .np-tags {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 8px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .tag.cat {
+            background: var(--sky);
+            color: #000;
+        }
+
+        .tag.sonic {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent2);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .tag.year {
+            color: var(--dim);
+            border: 1px solid var(--border);
+        }
+
+        .controls {
+            display: flex;
+            gap: 6px;
+            padding: 12px;
+            background: #000;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ctrl {
+            flex: 1;
+            padding: 12px 8px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .ctrl:active {
+            background: var(--border);
+            transform: translateY(1px);
+        }
+
+        .ctrl.primary {
+            background: var(--accent2);
+            color: #000;
+            border-color: var(--accent2);
+        }
+
+        .cat-bar {
+            display: flex;
+            gap: 6px;
+            padding: 10px 14px;
+            overflow-x: auto;
+            background: #000;
+            border-bottom: 1px solid var(--border);
+            scrollbar-width: none;
+        }
+
+        .cat-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cat-chip {
+            flex-shrink: 0;
+            padding: 6px 12px;
+            font-size: 9px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--dim);
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+
+        .cat-chip.active {
+            background: var(--text);
+            color: #000;
+            border-color: var(--text);
+        }
+
+        .cat-chip span {
+            opacity: 0.5;
+            margin-left: 4px;
+            font-weight: normal;
+        }
+
+        .track-list {
+            flex: 1;
+            overflow-y: auto;
+            background: var(--bg);
+        }
+
+        .track {
+            display: flex;
+            align-items: center;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .track:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .track.playing {
+            background: rgba(0, 255, 136, 0.05);
+            border-left: 3px solid var(--accent2);
+        }
+
+        .t-num {
+            width: 24px;
+            font-size: 9px;
+            color: var(--dim);
+            font-weight: bold;
+        }
+
+        .t-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .t-artist {
+            font-size: 11px;
+            color: var(--accent2);
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .t-title {
+            font-size: 10px;
+            color: var(--text);
+            opacity: 0.8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .t-meta {
+            font-size: 8px;
+            color: var(--dim);
+            text-align: right;
+            text-transform: uppercase;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 14px;
+            background: #000;
+            border-top: 1px solid var(--border);
+            font-size: 9px;
+        }
+
+        .stat-val {
+            color: var(--accent2);
+            font-weight: bold;
+        }
+
+        .stat-lbl {
+            color: var(--dim);
+            font-size: 7px;
+            letter-spacing: 1px;
+            margin-top: 2px;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="header">
+            <span class="brand">CONCRETE RIDGE / ADDIS SKY</span>
+            <div class="mode-pills">
+                <div class="pill on" id="p-auto">AUTO</div>
+                <div class="pill" id="p-shuf">SHUF</div>
+                <div class="pill" id="p-loop">LOOP</div>
+            </div>
+        </div>
+
+        <div class="video-section">
+            <div class="video-wrap">
+                <div id="player"></div>
+            </div>
+        </div>
+
+        <div class="now-playing">
+            <div class="np-row">
+                <div class="np-main">
+                    <div class="np-artist" id="np-artist">Awaiting selection</div>
+                    <div class="np-track" id="np-track">Select a movement to begin the drive</div>
+                </div>
+            </div>
+            <div class="np-tags">
+                <span class="tag cat" id="np-cat">--</span>
+                <span class="tag year" id="np-year">--</span>
+                <span class="tag sonic" id="np-sonic">--</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="ctrl" id="btn-prev">PREV</button>
+            <button class="ctrl primary" id="btn-next">NEXT TRACK</button>
+            <button class="ctrl" id="btn-rand">RANDOM</button>
+        </div>
+
+        <div class="cat-bar" id="cats"></div>
+        <div class="track-list" id="list"></div>
+
+        <div class="footer">
+            <div class="stat"><span class="stat-val" id="s-total">0</span><span class="stat-lbl">ARCHIVE</span></div>
+            <div class="stat"><span class="stat-val" id="s-show">0</span><span class="stat-lbl">VISIBLE</span></div>
+            <div class="stat"><span class="stat-val" id="s-played">0</span><span class="stat-lbl">HISTORY</span></div>
+            <div class="stat"><span class="stat-val" id="s-idx">0</span><span class="stat-lbl">POINTER</span></div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Using var to prevent "already declared" errors in environments that re-run script blocks
+            var A = [
+                // =========================
+                // ADDIS SKY (Ethio-Jazz)
+                // =========================
+                { a: "Mulatu Astatke", t: "Tezeta (Nostalgia)", c: "addis_sky", y: 1972, u: "https://www.youtube.com/watch?v=z6m6vHw30yM", s: "[JAZZ][TIZITA] — The root of the Addis Sky." },
+                { a: "Hailu Mergia", t: "Wede Harer Guzo", c: "addis_sky", y: 1978, u: "https://www.youtube.com/watch?v=W0n14oAn5oU", s: "[SYNTH][ACCORDION] — Hotel lounge futurism." },
+                { a: "Akalé Wubé", t: "Anbessa (ft. Manu Dibango)", c: "addis_sky", y: 2014, u: "https://www.youtube.com/watch?v=13F1PzI7yG4", s: "[MODERN][GRITTY] — Gritty Parisian-Ethiopian funk." },
+                { a: "Emahoy Tsegué-Maryam Guèbrou", t: "The Homeless Wanderer", c: "addis_sky", y: 1960, u: "https://www.youtube.com/watch?v=r0fR6v51l_8", s: "[PIANO][SACRED] — Minimalist devotion, ancient modes." },
+                { a: "Samuel Yirga", t: "Firma Ena Wereket", c: "addis_sky", y: 2012, u: "https://www.youtube.com/watch?v=pAnu7FjA76k", s: "[NEO-SOUL][PIANO] — Future-jazz pressure." },
+                { a: "Meklit Hadero", t: "Abbay Mado", c: "addis_sky", y: 2010, u: "https://www.youtube.com/watch?v=pD4I8h8CIn0", s: "[VOX][HYBRID] — Diaspora soul and folk." },
+
+                // =========================
+                // MOUNTAIN INNOVATION (Appalachian Futurism)
+                // =========================
+                { a: "Holly Herndon", t: "Frontier", c: "mtn_innovation", y: 2019, u: "https://www.youtube.com/watch?v=S0TivS92B_8", s: "[AI][CHOIR] — Sacred Harp meets modular AI." },
+                { a: "Rising Appalachia", t: "Tulli Tulli (Castanea Remix)", c: "mtn_innovation", y: 2021, u: "https://www.youtube.com/watch?v=68e7_u-S5U0", s: "[CRUNK-FOLK][BASS] — Sibling harmonies over electronic grids." },
+                { a: "Daniel Bachman", t: "Big Summer", c: "mtn_innovation", y: 2022, u: "https://www.youtube.com/watch?v=oE5SclR7zQk", s: "[GUITAR][DRONE] — Appalachian field recordings & climate anxiety." },
+                { a: "Béla Fleck", t: "Sinister Minister", c: "mtn_innovation", y: 1990, u: "https://www.youtube.com/watch?v=A-n8m9wS_mE", s: "[BANJO][FUNK] — Bluegrass played by robots." },
+                { a: "Nechochwen", t: "The Earth Quakes...", c: "mtn_innovation", y: 2015, u: "https://www.youtube.com/watch?v=NidO6V3D1t8", s: "[NATIVE][FOLK] — Black metal roots in Appalachian earth." },
+
+                // =========================
+                // SKYSCRAPERS (Urban Futurism / Modular)
+                // =========================
+                { a: "Richard Devine", t: "Timach", c: "skyscrapers", y: 2018, u: "https://www.youtube.com/watch?v=3u_C8w9p_nI", s: "[MODULAR][ATLANTA] — Polished, heavy-layered architectural sound." },
+                { a: "Ryuichi Sakamoto", t: "Riot in Lagos", c: "skyscrapers", y: 1980, u: "https://www.youtube.com/watch?v=u1vL97u11P8", s: "[PROTO-TECHNO] — The blueprint for the techno-mechanical hybrid." },
+                { a: "Floating Points", t: "Bias", c: "skyscrapers", y: 2019, u: "https://www.youtube.com/watch?v=Au1GJmBxrk4", s: "[CLEAN][DRIVE] — Precision pulse, high-res urban map." },
+                { a: "Steve Reich", t: "Electric Counterpoint: III. Fast", c: "skyscrapers", y: 1987, u: "https://www.youtube.com/watch?v=_TKVpU6KW6E", s: "[SYSTEMS][GUITAR] — 13 guitars pulsing in unison." },
+                { a: "Battles", t: "Atlas", c: "skyscrapers", y: 2007, u: "https://www.youtube.com/watch?v=lp6pEAL9V0E", s: "[INDUSTRIAL][MATH] — T-Rex stomping repetitive industrial grit." },
+
+                // =========================
+                // SYSTEMS (Minimalist / Acoustic Techno)
+                // =========================
+                { a: "Dawn of Midi", t: "Dysnomia", c: "systems", y: 2013, u: "https://www.youtube.com/watch?v=8mG_J8v_6vE", s: "[ACOUSTIC][GLITCH] — Jazz trio playing like a glitching computer." },
+                { a: "Brandt Brauer Frick", t: "Bop", c: "systems", y: 2010, u: "https://www.youtube.com/watch?v=p4vW9PscgN0", s: "[TECHNO][CLASSICAL] — Acoustic techno with mechanical precision." },
+                { a: "Philip Glass", t: "Pruit Igoe", c: "systems", y: 1982, u: "https://www.youtube.com/watch?v=jOEDsZbR6jE", s: "[MAJESTIC][COLLAPSE] — The sound of urban renewal and decay." },
+                { a: "Jon Hopkins", t: "Open Eye Signal", c: "systems", y: 2013, u: "https://www.youtube.com/watch?v=Q04ILDXe3QE", s: "[DRIVE][LASER] — Pristine techno lift, architectural clarity." },
+
+                // =========================
+                // WILDCARDS (Something We Don't Know)
+                // =========================
+                { a: "Mid-Air Thief", t: "These Chains", c: "wildcards", y: 2018, u: "https://www.youtube.com/watch?v=yYv0hN_wKx4", s: "[FOLKTRONICA][HAL] — Distorted hallucination of American landscape." },
+                { a: "Salami Rose Joe Louis", t: "Sitting in the Sun...", c: "wildcards", y: 2019, u: "https://www.youtube.com/watch?v=5W_z_y6Z97k", s: "[SCI-FI][JAZZ] — Cosmic transmissions from an orbiting station." },
+                { a: "Clown Core", t: "Computers", c: "wildcards", y: 2020, u: "https://www.youtube.com/watch?v=S_Ym9_wO7O0", s: "[ABSURD][GRIND] — Porta-potty jazz perfection." },
+                { a: "Hiroshi Yoshimura", t: "Green Shower", c: "wildcards", y: 1986, u: "https://www.youtube.com/watch?v=7uK2xO1zP1M", s: "[AMBIENT][CALM] — Environmental music for prefabricated futures." }
+            ];
+
+            var Q = [...A], idx = -1, played = 0, cat = 'all', auto = true, shuf = false, loop = false, P = null;
+
+            window.onYouTubeIframeAPIReady = function() {
+                // Global hook for YouTube API
+            };
+
+            function vid(u) {
+                if (!u) return null;
+                var m = u.match(/(?:v=|\/shorts\/|youtu\.be\/)([^&?\/]+)/);
+                return m ? m[1] : null;
+            }
+
+            function load(i) {
+                if (i < 0 || i >= Q.length) return;
+                var x = Q[i], id = vid(x.u);
+
+                if (P && typeof P.loadVideoById === 'function') {
+                    P.loadVideoById(id);
+                } else {
+                    P = new YT.Player('player', {
+                        videoId: id,
+                        playerVars: { autoplay: 1, controls: 1, modestbranding: 1, rel: 0, iv_load_policy: 3 },
+                        events: { onStateChange: onEnd }
+                    });
+                }
+                idx = i;
+                document.getElementById('np-artist').textContent = x.a;
+                document.getElementById('np-track').textContent = x.t;
+                document.getElementById('np-cat').textContent = x.c.replace(/_/g, ' ').toUpperCase();
+                document.getElementById('np-year').textContent = x.y;
+                document.getElementById('np-sonic').textContent = x.s;
+                document.getElementById('s-idx').textContent = i + 1;
+                render();
+            }
+
+            function onEnd(e) {
+                if (e.data === 0) {
+                    played++;
+                    document.getElementById('s-played').textContent = played;
+                    if (loop) { P.seekTo(0); P.playVideo(); }
+                    else if (auto) next();
+                }
+            }
+
+            function next() {
+                if (shuf) {
+                    var ni;
+                    do { ni = Math.floor(Math.random() * Q.length); } while (ni === idx && Q.length > 1);
+                    idx = ni;
+                } else {
+                    idx = (idx + 1) % Q.length;
+                }
+                load(idx);
+            }
+
+            function prev() {
+                idx = idx <= 0 ? Q.length - 1 : idx - 1;
+                load(idx);
+            }
+
+            function rand() {
+                idx = Math.floor(Math.random() * Q.length);
+                load(idx);
+            }
+
+            function filter(c) {
+                cat = c;
+                Q = c === 'all' ? [...A] : A.filter(function(x) { return x.c === c; });
+                idx = -1;
+                document.querySelectorAll('.cat-chip').forEach(function(e) { 
+                    e.classList.toggle('active', e.dataset.c === c); 
+                });
+                stats(); render();
+            }
+
+            function render() {
+                document.getElementById('list').innerHTML = Q.map(function(x, i) {
+                    return '<div class="track ' + (i === idx ? 'playing' : '') + '" onclick="window.appLoad(' + i + ')">' +
+                        '<div class="t-num">' + (i + 1).toString().padStart(2, '0') + '</div>' +
+                        '<div class="t-info">' +
+                            '<div class="t-artist">' + x.a + '</div>' +
+                            '<div class="t-title">' + x.t + '</div>' +
+                        '</div>' +
+                        '<div class="t-meta">' + x.y + '</div>' +
+                    '</div>';
+                }).join('');
+            }
+
+            function cats() {
+                var counts = {}; A.forEach(function(x) { counts[x.c] = (counts[x.c] || 0) + 1; });
+                document.getElementById('cats').innerHTML =
+                    '<div class="cat-chip active" data-c="all" onclick="window.appFilter(\'all\')">ALL<span>' + A.length + '</span></div>' +
+                    Object.keys(counts).map(function(k) {
+                        return '<div class="cat-chip" data-c="' + k + '" onclick="window.appFilter(\'' + k + '\')">' + k.replace(/_/g, ' ').toUpperCase() + '<span>' + counts[k] + '</span></div>';
+                    }).join('');
+            }
+
+            function stats() {
+                document.getElementById('s-total').textContent = A.length;
+                document.getElementById('s-show').textContent = Q.length;
+            }
+
+            // Expose required functions to global scope for HTML onclick handlers
+            window.appLoad = load;
+            window.appFilter = filter;
+
+            document.getElementById('btn-next').onclick = next;
+            document.getElementById('btn-prev').onclick = prev;
+            document.getElementById('btn-rand').onclick = rand;
+            document.getElementById('p-auto').onclick = function () { auto = !auto; this.classList.toggle('on', auto); };
+            document.getElementById('p-shuf').onclick = function () { shuf = !shuf; this.classList.toggle('on', shuf); };
+            document.getElementById('p-loop').onclick = function () { loop = !loop; this.classList.toggle('on', loop); };
+
+            cats(); render(); stats();
+
+            // Load YT API script if not present
+            if (!document.getElementById('yt-api-script')) {
+                var tag = document.createElement('script');
+                tag.id = 'yt-api-script';
+                tag.src = "https://www.youtube.com/iframe_api";
+                var firstScriptTag = document.getElementsByTagName('script')[0];
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            }
+        })();
+    </script>
+</body>
+
+</html>
